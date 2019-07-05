@@ -43,7 +43,7 @@ var gameStats = {
             ],
     
     stevenVelocity: 130,
-    stevenStartingX: 200,
+    stevenStartingX: 194,
     stevenStartingY: 398,
 
     crystalShrimpPointValue: 200,
@@ -81,7 +81,7 @@ function addSword(){
 }
 
 //remove high score?
-function initScoreBoard() {
+function loadScoreBoard() {
     scoreDisplay = this.game.add.text(50, 25, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 });
     highScoreDisplay = this.game.add.text(200, 25, 'High Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 });
     lifeIcon1 = this.game.add.sprite(25, 520, 'life-icon');

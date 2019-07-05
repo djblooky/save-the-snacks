@@ -2,9 +2,9 @@ var levelState = {
 
     create: function() {
         this.loadGraphics();
-        //this.loadPhysics();
-        //this.loadControls();
-        //loadScoreBoard();
+        this.loadPhysics();
+        this.loadControls();
+        loadScoreBoard(); //from game.js
     },
 
     loadGraphics: function(){
@@ -12,7 +12,24 @@ var levelState = {
         this.createPlayer();
         this.createEnemies();
         //this.addAnimations();
-        //this.animateGhosts();
+        //this.animateEnemies();
+    },
+
+    loadPhysics : function(){
+        this.game.physics.arcade.enable(steven);
+        //enable physics for each kind of enemy
+
+        steven.body.velocity.x = gameStats.stevenVelocity;
+        steven.body.immovable = true;
+        
+        //ghosts.setAll('body.immovable', true);
+        
+        //ghosts.forEachExists(ghost => levelState.mobilizeGhosts(ghost));
+        gameStats.inPlay = true;
+    },
+
+    loadControls: function(){
+        cursors = this.game.input.keyboard.createCursorKeys();
     },
 
     createStage: function() {
