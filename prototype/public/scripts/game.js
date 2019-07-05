@@ -43,8 +43,8 @@ var gameStats = {
             ],
     
     stevenVelocity: 130,
-    stevenStartingX: 194,
-    stevenStartingY: 398,
+    stevenStartingX: 32,
+    stevenStartingY: 32,
 
     crystalShrimpPointValue: 200,
     crystalShrimpVelocity: 80,
