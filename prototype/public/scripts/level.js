@@ -24,7 +24,8 @@ var levelState = {
     },
 
     createPlayer: function(){
-        
+        steven = this.game.add.sprite(gameStats.stevenStartingX, gameStats.stevenStartingY, 'steven');
+        steven.anchor.setTo(0.5);
     },
 
     createEnemies: function(){
