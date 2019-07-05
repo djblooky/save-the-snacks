@@ -11,7 +11,7 @@ var loadState = {
         this.game.load.spritesheet('steven', 'car.png',
           { frameWidth: 32, frameHeight: 32 });
 		
-		this.game.load.image('star', 'star.png');
+		this.game.load.image('life-icon', 'star.png');
 
     },
     

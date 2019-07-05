@@ -84,9 +84,9 @@ function addSword(){
 function loadScoreBoard() {
     scoreDisplay = this.game.add.text(50, 25, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 });
     highScoreDisplay = this.game.add.text(200, 25, 'High Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 });
-    lifeIcon1 = this.game.add.sprite(25, 520, 'life-icon');
-    lifeIcon2 = this.game.add.sprite(45, 520, 'life-icon');
-    lifeIcon3 = this.game.add.sprite(65, 520, 'life-icon');
+    lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon');
+    lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
+    lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
     
     [scoreDisplay, highScoreDisplay, lifeIcon1, lifeIcon2, lifeIcon3].forEach(s => s.anchor.setTo(0.5));
 }
@@ -94,15 +94,15 @@ function loadScoreBoard() {
 function addLifeIcons() {
     switch (gameStats.lives) {
         case 1:
-            lifeIcon2 = this.game.add.sprite(45, 520, 'life-icon');
+            lifeIcon2 = this.game.add.sprite(45, 540, 'life-icon');
             lifeIcon2.anchor.setTo(0.5);
             break;
         case 2:
-            lifeIcon3 = this.game.add.sprite(65, 520, 'life-icon');
+            lifeIcon3 = this.game.add.sprite(65, 540, 'life-icon');
             lifeIcon3.anchor.setTo(0.5);
             break;
         case 3:
-            lifeIcon4 = this.game.add.sprite(85, 520, 'life-icon');
+            lifeIcon4 = this.game.add.sprite(85, 540, 'life-icon');
             lifeIcon4.anchor.setTo(0.5);
             break;
     }
