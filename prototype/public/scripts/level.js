@@ -79,6 +79,34 @@ var levelState = {
         }, null, this);
     },
 
+    pathRightAvailable: function() {
+        var index1 = map.getTileRight(0, stevenX, stevenY).index;
+        var index2 = map.getTileRight(0, stevenX + 1, stevenY).index;
+        var index3 = map.getTileRight(0, stevenX + 2, stevenY).index;
+        return [index1, index2, index3].every(index => index == -1);
+    },
+    
+    pathLeftAvailable: function() {
+        var index1 = map.getTileLeft(0, stevenX, stevenY).index;
+        var index2 = map.getTileLeft(0, stevenX - 1, stevenY).index;
+        var index3 = map.getTileLeft(0, stevenX - 2, stevenY).index;
+        return [index1, index2, index3].every(index => index == -1);
+    },
+    
+    pathUpAvailable: function() {
+        var index1 = map.getTileAbove(0, stevenX, stevenY).index;
+        var index2 = map.getTileAbove(0, stevenX, stevenY - 1).index;
+        var index3 = map.getTileAbove(0, stevenX, stevenY - 2).index;
+        return [index1, index2, index3].every(index => index == -1);
+    },
+    
+    pathDownAvailable: function() {
+        var index1 = map.getTileBelow(0, stevenX, stevenY).index
+        var index2 = map.getTileBelow(0, stevenX, stevenY + 1).index;
+        var index3 = map.getTileBelow(0, stevenX, stevenY + 2).index
+        return [index1, index2, index3].every(index => index == -1);
+    },
+
     moveLeft: function() {
         if (cursors.left.justPressed()) {
             steven.direction = 'left';
@@ -121,34 +149,6 @@ var levelState = {
             steven.animations.stop();
             steven.animations.play('stevenDown');
         }
-    },
-
-    pathRightAvailable: function() {
-        var index1 = map.getTileRight(0, stevenX, stevenY).index;
-        var index2 = map.getTileRight(0, stevenX + 1, stevenY).index;
-        var index3 = map.getTileRight(0, stevenX + 2, stevenY).index;
-        return [index1, index2, index3].every(index => index == -1);
-    },
-    
-    pathLeftAvailable: function() {
-        var index1 = map.getTileLeft(0, stevenX, stevenY).index;
-        var index2 = map.getTileLeft(0, stevenX - 1, stevenY).index;
-        var index3 = map.getTileLeft(0, stevenX - 2, stevenY).index;
-        return [index1, index2, index3].every(index => index == -1);
-    },
-    
-    pathUpAvailable: function() {
-        var index1 = map.getTileAbove(0, stevenX, stevenY).index;
-        var index2 = map.getTileAbove(0, stevenX, stevenY - 1).index;
-        var index3 = map.getTileAbove(0, stevenX, stevenY - 2).index;
-        return [index1, index2, index3].every(index => index == -1);
-    },
-    
-    pathDownAvailable: function() {
-        var index1 = map.getTileBelow(0, stevenX, stevenY).index
-        var index2 = map.getTileBelow(0, stevenX, stevenY + 1).index;
-        var index3 = map.getTileBelow(0, stevenX, stevenY + 2).index
-        return [index1, index2, index3].every(index => index == -1);
     },
     
     update: function(){
