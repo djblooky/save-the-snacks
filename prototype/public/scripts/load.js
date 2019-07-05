@@ -5,7 +5,7 @@ var loadState = {
         
         this.game.load.path = 'assets/';
 
-        this.game.load.image('tiles', 'tiles.png');
+        this.game.load.image('terrain', 'terrain.png');
         this.game.load.image('menubackground', 'sky.png');
         
         this.game.load.spritesheet('dude', 'dude.png',
