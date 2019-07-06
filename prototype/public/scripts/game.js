@@ -20,6 +20,8 @@ var lifeIcon4;
 
 //game variables
 var stevenX, stevenY; //player coordinates
+var stevenSize = 32; //sprite width and height
+var directions = [null, null, null, null, null];
 
 //timers
 
@@ -43,8 +45,8 @@ var gameStats = {
             ],
     
     stevenVelocity: 130,
-    stevenStartingX: 32,
-    stevenStartingY: 32,
+    stevenStartingX: 32 + (stevenSize/2),
+    stevenStartingY: 32 + (stevenSize/2),
 
     crystalShrimpPointValue: 200,
     crystalShrimpVelocity: 80,

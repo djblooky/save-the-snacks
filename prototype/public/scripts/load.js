@@ -8,7 +8,7 @@ var loadState = {
         this.game.load.image('terrain', 'terrain.png');
         this.game.load.image('menubackground', 'sky.png');
         
-        this.game.load.spritesheet('steven', 'car.png', 32, 32);
+        this.game.load.spritesheet('steven', 'car.png', stevenSize, stevenSize);
 		
 		this.game.load.image('life-icon', 'star.png');
 

@@ -64,111 +64,75 @@ var levelState = {
     },
 
     hitWall: function() {
-        this.game.physics.arcade.collide(steven, wallLayer, function(sprite, wall) {
+      /*  this.game.physics.arcade.collide(steven, wallLayer, function(sprite, wall) {
             steven.body.velocity.x = 0;
             steven.animations.stop();
-        }, null, this);
+        }, null, this);*/
+        this.game.physics.arcade.collide(steven, wallLayer);
     },
 
-    pathRightAvailable: function() {
-        var index1 = map.getTileRight(1, stevenX, stevenY).index;
-        var index2 = map.getTileRight(1, stevenX + 1, stevenY).index;
-        var index3 = map.getTileRight(1, stevenX + 2, stevenY).index;
-        return [index1, index2, index3].every(index => index == -1);
-    },
-    
-    pathLeftAvailable: function() {
-        var index1 = map.getTileLeft(1, stevenX, stevenY).index;
-        var index2 = map.getTileLeft(1, stevenX - 1, stevenY).index;
-        var index3 = map.getTileLeft(1, stevenX - 2, stevenY).index;
-        return [index1, index2, index3].every(index => index == -1);
-    },
-    
-    pathUpAvailable: function() {
-        var index1 = map.getTileAbove(1, stevenX, stevenY).index;
-        console.log("above index 1: " + index1);
-        var index2 = map.getTileAbove(1, stevenX, stevenY - 1).index;
-        console.log("above index 2: " + index1);
-        var index3 = map.getTileAbove(1, stevenX, stevenY - 2).index;
-        console.log("above index 3: " + index1);
-        return [index1, index2, index3].every(index => index == -1); 
+    getMoveKey: function(){ //add turn stuff 
 
-       /* var i = wallLayer.index; 
-        if(this.map.getTileAbove(i, stevenX, stevenY) == null){
-            return true;
-        }
-        else{
-            return false;
-        }*/     
-    },
-    
-    pathDownAvailable: function() {
-        var index1 = map.getTileBelow(1, stevenX, stevenY +1).index;
-        console.log("below index 1: " + index1);
-        var index2 = map.getTileBelow(1, stevenX, stevenY + 1).index;
-        console.log("below index 2: " + index2);
-        //var index3 = map.getTileBelow(1, stevenX, stevenY + 2).index;   
-        console.log("below index 3: " + index3);
-        //return index1 == -1;
-        //return [index1, index2, index3].every(index => index == -1);
+        if (cursors.left.isDown)
+            {
+                return (Phaser.LEFT);
+            }
+        else if (cursors.right.isDown)
+            {
+                return (Phaser.RIGHT);
+            }
+        else if (cursors.up.isDown)
+            {
+                return (Phaser.UP);
+            }
+        else if (cursors.down.isDown)
+            {
+                return (Phaser.DOWN);
+            }
     },
 
-    moveLeft: function() {
-        if (cursors.left.justPressed()){// && this.pathLeftAvailable()) {
-            steven.direction = 'left';
-            steven.body.velocity.y = 0;
-            steven.body.velocity.x = -(gameStats.stevenVelocity);
-           // steven.frame = 4;
-            //steven.animations.stop();
-            //steven.animations.play('stevenLeft');
-        }
-    },
-    
-    moveRight: function() {
-        if (cursors.right.justPressed()){// && this.pathRightAvailable()) {
-            steven.direction = 'right';
-            steven.body.velocity.y = 0;
-            steven.body.velocity.x = gameStats.stevenVelocity;
-            //steven.frame = 0;
-           // steven.animations.stop();
-            //steven.animations.play('stevenRight');
-        }
-    },
+    moveSteven: function(direction) {
+     
+        //console.log("moving " + direction);
 
-    moveUp: function() {
-        if (cursors.up.justPressed() && this.pathUpAvailable()) { 
-            steven.direction = 'up';
-            steven.body.velocity.x = 0;
-            steven.body.velocity.y = -gameStats.stevenVelocity;
-            //steven.frame = 6;
-            //steven.animations.stop();
-            //steven.animations.play('stevenUp');
-        }
-    },
-    
-    moveDown: function() {
-        if (cursors.down.justPressed() && this.pathDownAvailable()) {
-            steven.direction = 'down';
-            steven.body.velocity.x = 0;
-            steven.body.velocity.y = gameStats.stevenVelocity;
-            //steven.frame = 2;
-            //steven.animations.stop();
-            //steven.animations.play('stevenDown');
-        }
-    },
+        //if that path is open
+        steven.direction = direction;
 
-    moveSteven: function() {
-        this.moveLeft();
-        this.moveRight();
-        this.moveUp();
-        this.moveDown();
+        switch(direction){
+            case 4: //down
+                steven.body.velocity.x = 0;
+                steven.body.velocity.y = gameStats.stevenVelocity;
+                break;
+            case 3: //up
+                steven.body.velocity.x = 0;
+                steven.body.velocity.y = -(gameStats.stevenVelocity);
+                break;
+            case 1: //left
+                steven.body.velocity.y = 0;
+                steven.body.velocity.x = -(gameStats.stevenVelocity);
+                break;
+            case 2: //right
+                steven.body.velocity.y = 0;
+                steven.body.velocity.x = gameStats.stevenVelocity;
+                break;
+        }
+
         this.wrapAround();
         this.hitWall();
     },
 
+    updateGridSensors:function(){ //do i need this?
+        directions[1] = map.getTileLeft(wallLayer.index, stevenX, stevenY);
+        directions[2] = map.getTileRight(1, stevenX, stevenY);
+        directions[3] = map.getTileAbove(1, stevenX, stevenY);
+        directions[4] = map.getTileBelow(1, stevenX, stevenY);
+    },
+
     update: function(){
         if (gameStats.inPlay) {
-            this.moveSteven();
+
+            this.updateGridSensors();
+            this.moveSteven(this.getMoveKey());
             this.updateStevenPosition();
             console.log(stevenX + ", " + stevenY);
             //this.moveEnemies();
