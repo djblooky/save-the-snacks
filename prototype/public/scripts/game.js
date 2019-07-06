@@ -23,8 +23,9 @@ var stevenX, stevenY; //player coordinates
 var stevenSize = 32; //sprite width and height
 
 //movement
-var safetile = -1;
 var turnPoint = new Phaser.Point();
+var marker = new Phaser.Point();
+var current = Phaser.UP;
 var threshold = 3; 
 var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];

@@ -5,6 +5,8 @@ var levelState = {
         this.loadPhysics();
         this.loadControls();
         loadScoreBoard(); //from game.js
+
+        this.moveSteven(Phaser.DOWN);
     },
 
     loadGraphics: function(){
@@ -52,6 +54,9 @@ var levelState = {
     updateStevenPosition: function() {
         stevenX = Math.round(steven.x / map.tileWidth);
         stevenY = Math.round(steven.y / map.tileHeight);
+
+        marker.x = this.math.snapToFloor(Math.floor(steven.x), map.tileWidth) / map.tileWidth;
+        marker.y = this.math.snapToFloor(Math.floor(steven.y), map.tileHeight) / map.tileHeight;
     },
 
     wrapAround: function() {
@@ -93,27 +98,22 @@ var levelState = {
 
     checkForTurn: function (turnDirection) {
 
-        if (willTurn === turnDirection || directions[turnDirection] === null || directions[turnDirection].index !== safetile)
+        if (willTurn === turnDirection || directions[turnDirection] === null || directions[turnDirection].index !== -1)
         {
             //  Invalid direction if they're already set to turn that way
             //  Or there is no tile there, or the tile isn't index a floor tile
             return;
         }
         
-        if (steven.direction === opposites[turnDirection]) //check for turn around
+        if (current === opposites[turnDirection]) //check for turn around
         {
             this.moveSteven(turnDirection);
         }
         else //if turning, set turn direction and turn points
         {
             willTurn = turnDirection;
-            turnPoint.x = (stevenX * map.tileWidth) + (map.tileWidth / 2); //check
-            turnPoint.y = (stevenY * map.tileHeight) + (map.tileHeight / 2); //check
-        }
-
-        if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
-        {
-                this.turnSteven();
+            turnPoint.x = (marker.x * map.tileWidth) + (map.tileWidth / 2); //check
+            turnPoint.y = (marker.y * map.tileHeight) + (map.tileHeight / 2); //check
         }
     },
 
@@ -128,10 +128,12 @@ var levelState = {
         }
 
         steven.x = turnPoint.x;
-        steven.y = this.turnPoint.y;
+        steven.y = turnPoint.y;
         steven.body.reset(turnPoint.x, turnPoint.y);
 
         this.moveSteven(willTurn);
+
+        console.log("turned " + willTurn)
 
         willTurn = Phaser.NONE; //resets direction to be turned to to none
 
@@ -153,7 +155,7 @@ var levelState = {
                 steven.body.velocity.x = 0;
                 steven.body.velocity.y = -(gameStats.stevenVelocity);
                 break;
-            case 1:
+            case 1: //left
                 steven.body.velocity.y = 0;
                 steven.body.velocity.x = -(gameStats.stevenVelocity);
                 break;
@@ -164,24 +166,35 @@ var levelState = {
         }
 
         //rotation
-        //this.add.tween(this.car).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
-        this.wrapAround();
-        this.hitWall();
+        //this.add.tween(steven).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
+        current = direction;
+        
     },
 
     updateGridSensors:function(){
-        directions[1] = map.getTileLeft(wallLayer.index, stevenX, stevenY);
-        directions[2] = map.getTileRight(1, stevenX, stevenY);
-        directions[3] = map.getTileAbove(1, stevenX, stevenY);
-        directions[4] = map.getTileBelow(1, stevenX, stevenY);
+        directions[1] = map.getTileLeft(wallLayer.index, marker.x, marker.y);
+        directions[2] = map.getTileRight(wallLayer.index, marker.x, marker.y);
+        directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
+        directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
     },
 
     update: function(){
         if (gameStats.inPlay) {
 
-            this.updateGridSensors();
-            this.checkForTurn(this.GetMoveKey());
             this.updateStevenPosition();
+            this.updateGridSensors();
+
+            if(cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown){
+                this.checkForTurn(this.getMoveKey()); //only move while move keys are pressed
+            }
+
+            if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
+                 {
+                    this.turnSteven();
+                 }
+
+            this.wrapAround();
+            this.hitWall();
             console.log(stevenX + ", " + stevenY);
             //this.moveEnemies();
             //this.updateScore();
