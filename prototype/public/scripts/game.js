@@ -53,7 +53,7 @@ var gameStats = {
                 {'levels': [9,10,11,12], 'name': 'pineapple', 'value': 2000}
             ],
     
-    stevenVelocity: 130,
+    stevenVelocity: 150,
     stevenStartingX: 32 + (stevenSize/2),
     stevenStartingY: 32 + (stevenSize/2),
 

@@ -60,10 +60,10 @@ var levelState = {
     },
 
     wrapAround: function() {
-        if (steven.right >= game.world.right && steven.direction == 'right') {
+        if (steven.right >= game.world.right && current === 2) {
             steven.right = 0;
         }
-        if (steven.left <= 0 && steven.direction == 'left') {
+        if (steven.left <= 0 && current === 1) {
             steven.left = game.world.right;
         }
     },
@@ -133,7 +133,7 @@ var levelState = {
 
         this.moveSteven(willTurn);
 
-        console.log("turned " + willTurn)
+        //console.log("turned " + willTurn)
 
         willTurn = Phaser.NONE; //resets direction to be turned to to none
 
@@ -142,9 +142,10 @@ var levelState = {
 
     moveSteven: function(direction) {
       
-        console.log("moving " + direction);
+        //console.log("moving " + direction);
 
-        steven.direction = direction;
+        //steven.direction = direction;
+        current = direction;
 
         switch(direction){
             case 4: //down
@@ -195,7 +196,7 @@ var levelState = {
 
             this.wrapAround();
             this.hitWall();
-            console.log(stevenX + ", " + stevenY);
+            //console.log(stevenX + ", " + stevenY);
             //this.moveEnemies();
             //this.updateScore();
         }
