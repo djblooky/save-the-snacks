@@ -18,10 +18,17 @@ var lifeIcon2;
 var lifeIcon3;
 var lifeIcon4;
 
-//game variables
+//steven
 var stevenX, stevenY; //player coordinates
 var stevenSize = 32; //sprite width and height
+
+//movement
+var safetile = -1;
+var turnPoint = new Phaser.Point();
+var threshold = 3; 
+var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];
+var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ]; 
 
 //timers
 

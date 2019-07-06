@@ -91,20 +91,63 @@ var levelState = {
             }
     },
 
+    checkForTurn: function (turnDirection) {
+
+        if (willTurn === turnDirection || directions[turnDirection] === null || directions[turnDirection].index !== safetile)
+        {
+            //  Invalid direction if they're already set to turn that way
+            //  Or there is no tile there, or the tile isn't index a floor tile
+            return;
+        }
+        
+        if (steven.direction === opposites[turnDirection]) //check for turn around
+        {
+            this.moveSteven(turnDirection);
+        }
+        else //if turning, set turn direction and turn points
+        {
+            willTurn = turnDirection;
+            turnPoint.x = (stevenX * map.tileWidth) + (map.tileWidth / 2); //check
+            turnPoint.y = (stevenY * map.tileHeight) + (map.tileHeight / 2); //check
+        }
+
+        if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
+        {
+                this.turnSteven();
+        }
+    },
+
+    turnSteven:function(){
+        var sx = Math.floor(steven.x); //get steven's x/y coords
+        var sy = Math.floor(steven.y);
+
+        //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
+        if (!this.math.fuzzyEqual(sx, turnPoint.x, threshold) || !this.math.fuzzyEqual(sy, turnPoint.y, threshold))
+        {
+            return false;
+        }
+
+        steven.x = turnPoint.x;
+        steven.y = this.turnPoint.y;
+        steven.body.reset(turnPoint.x, turnPoint.y);
+
+        this.moveSteven(willTurn);
+
+        willTurn = Phaser.NONE; //resets direction to be turned to to none
+
+        return true;
+    },
+
     moveSteven: function(direction) {
-      /*  this.moveLeft();
-        this.moveRight();
-        this.moveUp();
-        this.moveDown();*/
+      
         console.log("moving " + direction);
-        //if that path is open
+
         steven.direction = direction;
 
         switch(direction){
             case 4: //down
                 steven.body.velocity.x = 0;
                 steven.body.velocity.y = gameStats.stevenVelocity;
-                steven.body.set
                 break;
             case 3://up
                 steven.body.velocity.x = 0;
@@ -137,7 +180,7 @@ var levelState = {
         if (gameStats.inPlay) {
 
             this.updateGridSensors();
-            this.moveSteven(this.getMoveKey());
+            this.checkForTurn(this.GetMoveKey());
             this.updateStevenPosition();
             console.log(stevenX + ", " + stevenY);
             //this.moveEnemies();
