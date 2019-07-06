@@ -98,7 +98,7 @@ var levelState = {
 
     checkForTurn: function (turnDirection) {
 
-        if (willTurn === turnDirection || directions[turnDirection] === null || directions[turnDirection].index !== -1)
+        if (willTurn === turnDirection || directions[turnDirection] === null || directions[turnDirection].index !== safetile)
         {
             //  Invalid direction if they're already set to turn that way
             //  Or there is no tile there, or the tile isn't index a floor tile

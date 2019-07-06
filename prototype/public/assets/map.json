@@ -39,7 +39,7 @@
          "imageheight":1024,
          "imagewidth":1024,
          "margin":0,
-         "name":"tileTest",
+         "name":"terrain",
          "spacing":0,
          "tilecount":1024,
          "tileheight":32,

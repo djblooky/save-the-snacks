@@ -27,6 +27,7 @@ var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
 var current = Phaser.UP;
 var threshold = 3; 
+var safetile = -1;
 var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];
 var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ]; 
