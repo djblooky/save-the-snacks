@@ -71,7 +71,7 @@ var levelState = {
         this.game.physics.arcade.collide(steven, wallLayer);
     },
 
-    getMoveKey: function(){ //add turn stuff 
+    getMoveKey: function(){
 
         if (cursors.left.isDown)
             {
@@ -92,9 +92,11 @@ var levelState = {
     },
 
     moveSteven: function(direction) {
-     
-        //console.log("moving " + direction);
-
+      /*  this.moveLeft();
+        this.moveRight();
+        this.moveUp();
+        this.moveDown();*/
+        console.log("moving " + direction);
         //if that path is open
         steven.direction = direction;
 
@@ -102,12 +104,13 @@ var levelState = {
             case 4: //down
                 steven.body.velocity.x = 0;
                 steven.body.velocity.y = gameStats.stevenVelocity;
+                steven.body.set
                 break;
-            case 3: //up
+            case 3://up
                 steven.body.velocity.x = 0;
                 steven.body.velocity.y = -(gameStats.stevenVelocity);
                 break;
-            case 1: //left
+            case 1:
                 steven.body.velocity.y = 0;
                 steven.body.velocity.x = -(gameStats.stevenVelocity);
                 break;
@@ -117,11 +120,13 @@ var levelState = {
                 break;
         }
 
+        //rotation
+        //this.add.tween(this.car).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
         this.wrapAround();
         this.hitWall();
     },
 
-    updateGridSensors:function(){ //do i need this?
+    updateGridSensors:function(){
         directions[1] = map.getTileLeft(wallLayer.index, stevenX, stevenY);
         directions[2] = map.getTileRight(1, stevenX, stevenY);
         directions[3] = map.getTileAbove(1, stevenX, stevenY);
