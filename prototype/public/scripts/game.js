@@ -26,8 +26,8 @@ var stevenX, stevenY; //player coordinates
 var stevenSize = 32; //sprite width and height
 
 //movement
-var safeTiles = [];
-//var tiles = wallLayer.getTiles(0,0, map.tileWidth, map.tileHeight);
+var xTile = 3;
+var yTile = 4;
 var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
 var current = Phaser.UP;
@@ -78,33 +78,35 @@ var gameStats = {
     snackRespawnTime: 500,
 }
 
-function getSafeTiles(){
-    for (var i=0; i < tiles.length; i++) {  
-        if (terrain[i].index==safetile) {   
-             safeTiles.push(terrain[i]);  
-            }
+function getRandomTile(){
+
+    var x;
+    var y;
+    var tileIndex;
+
+    do{
+        x = Math.floor(Math.random() * (12 - 1 + 1)) + 1; //random tile coords, 1-height/width
+        y = Math.floor(Math.random() * (16 - 1 + 1)) + 1; //12 = map width, 16 = map height
+    
+        tileIndex = map.getTile(x, y, wallLayer, true).index; //get the tile index at those coords
+
+        if(tileIndex === safetile){ //if that tile is a safe tile, save coords to allow snack to spawn
+            xTile = x;
+            yTile = y;
         }
+
+    }while(tileIndex !== safetile); //keep searching for random tile until it is a safe tile
+        
 }
 
 function getSnackX(){
-    var snackX = 10;
 
-    //range between map.tileWidth and 32, excluding unsafe tiles
-    x = Math.random() * map.tileWidth;
-    if(wallLayer.getTileX(x) === safetile){ //if x and y match any safe tile coors, return coords. else, reshuffle random
-
-    }
-
-    return snackX;
+    return xTile * (32/2); //need to convert tile coordinate to normal coordinate
 }
 
 function getSnackY(){
-    var snackY = 10;
 
-    //range between map.tileHeight and 32, excluding unsafe tiles
-    Math.random() * map.tileHeight;
-
-    return snackY;
+    return yTile * (32/2); //tile size/2 to center snack in path
 }
 
 function addSnacks() {
@@ -112,7 +114,7 @@ function addSnacks() {
         gameStats.snacksAdded = true;
         //console.log('snack added is true');
         var currentSnack = gameStats.snacks.find(snack => snack.levels.includes(gameStats.level));
-        snacks = this.game.add.sprite(getSnackX(), getsnackY(), currentSnack.name); //randomly place snacks
+        snacks = this.game.add.sprite(getSnackX(), getSnackY(), currentSnack.name); //randomly place snacks
         snacks.anchor.setTo(0.5);
         this.game.physics.arcade.enable(snacks);
     }
@@ -136,13 +138,13 @@ function addUI() {
     scoreDisplay = this.game.add.text(game.world.centerX, 15, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 }); //score display at top center
     
         //pause button
-	    pause = this.game.add.button(360, 15, 'pause', function() {
+	    pause = this.game.add.button(360, 20, 'pause', function() {
             pauseGame();
 			this.game.state.start('pause');
 		});
         
         //exit button
-	    exit = this.game.add.button(25, 15, 'exit', function() {
+	    exit = this.game.add.button(25, 20, 'exit', function() {
 			this.game.state.start('menu');
 		});
 
