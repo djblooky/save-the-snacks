@@ -36,6 +36,7 @@ var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP
 
 var gameStats = {
     score: 0,
+    coins: 0,
     highScore: localStorage['stevenHighScore'] || 0,
     level: 1,
     lives: 3,
@@ -91,15 +92,25 @@ function addSword(){
     }
 }
 
-//remove high score?
-function loadScoreBoard() {
-    scoreDisplay = this.game.add.text(50, 25, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 });
-    highScoreDisplay = this.game.add.text(200, 25, 'High Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 });
-    lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon');
+function addUI() {
+    scoreDisplay = this.game.add.text(game.world.centerX, 15, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 }); //score display at top center
+    
+        //pause button
+	    pause = this.game.add.button(345, 15, 'pause', function() {
+			this.game.state.start('pause');
+		});
+        
+        //exit button
+	    exit = this.game.add.button(25, 15, 'exit', function() {
+			this.game.state.start('menu');
+		});
+
+    coinsDisplay = this.game.add.text(300, 530, 'Coins: ' + gameStats.coins, { 'fill': 'white', 'fontSize': 16 }); //coins bottom right
+    lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon'); //life icons bottom left
     lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
     lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
     
-    [scoreDisplay, highScoreDisplay, lifeIcon1, lifeIcon2, lifeIcon3].forEach(s => s.anchor.setTo(0.5));
+    [scoreDisplay, coinsDisplay, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
 }
 
 function addLifeIcons() {

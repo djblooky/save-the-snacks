@@ -1,15 +1,15 @@
 var levelState = {
 
     create: function() {
-        this.loadGraphics();
-        this.loadPhysics();
-        this.loadControls();
-        loadScoreBoard(); //from game.js
+        this.addGraphics();
+        this.addPhysics();
+        this.addControls();
+        addUI(); //from game.js
 
         this.moveSteven(Phaser.DOWN);
     },
 
-    loadGraphics: function(){
+    addGraphics: function(){
         this.createStage();
         this.createPlayer();
         this.createEnemies();
@@ -17,7 +17,7 @@ var levelState = {
         //this.animateEnemies();
     },
 
-    loadPhysics : function(){
+    addPhysics : function(){
         this.game.physics.arcade.enable(steven);
         //enable physics for each kind of enemy
 
@@ -30,7 +30,7 @@ var levelState = {
         gameStats.inPlay = true;
     },
 
-    loadControls: function(){
+    addControls: function(){
         cursors = this.game.input.keyboard.createCursorKeys();
     },
 
