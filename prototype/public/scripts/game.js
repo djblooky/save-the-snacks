@@ -101,12 +101,12 @@ function getRandomTile(){
 
 function getSnackX(){
 
-    return xTile * (32/2); //need to convert tile coordinate to normal coordinate
+    return (xTile * 32) - (32/2); //need to convert tile coordinate to normal coordinate
 }
 
 function getSnackY(){
 
-    return yTile * (32/2); //tile size/2 to center snack in path
+    return (yTile * 32) - (32/2); //tile size/2 to center snack in path
 }
 
 function addSnacks() {
