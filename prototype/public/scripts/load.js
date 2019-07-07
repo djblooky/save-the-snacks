@@ -11,9 +11,12 @@ var loadState = {
         this.game.load.image('pause', 'pause_button.png');
         this.game.load.image('exit', 'exit_button.png');
         
-        this.game.load.spritesheet('steven', 'car.png', stevenSize, stevenSize);
+        this.game.load.spritesheet('steven', 'steven.png', stevenSize, stevenSize);
 		
-		this.game.load.image('life-icon', 'star.png');
+        this.game.load.image('life-icon', 'star.png');
+        
+        //snacks
+        this.game.load.image('cookieCat', 'cookie_cat.png')
 
     },
     

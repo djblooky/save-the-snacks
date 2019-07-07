@@ -5,6 +5,8 @@ var levelState = {
         this.addPhysics();
         this.addControls();
         addUI(); //from game.js
+        //getSafeTiles();
+        console.log(safeTiles);
 
         this.moveSteven(Phaser.DOWN);
     },
@@ -179,6 +181,35 @@ var levelState = {
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
     },
 
+    collectSnack: function() {
+        var gotSnack = false;
+        if (snacks) {
+            this.game.physics.arcade.overlap(steven, snacks, function() {
+                snacks.destroy();
+                var currentsnack = gameStats.snacks.find(snacks => snacks.levels.includes(gameStats.level));
+                gameStats.score += currentsnack.value;
+                snackScore = game.add.text(190, 305, currentsnack.value, { 'fill': 'white', 'fontSize': 25 });
+                snackScore.anchor.setTo(0.5);
+                snackScore.lifespan = 1000;   
+                gotSnack = true;
+            }); 
+
+            if(gotSnack){
+                //wait for timer to respawn snack
+                this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
+                //console.log('snack added is false');
+            }    
+        }
+    },
+
+    updateScore: function() {
+        scoreDisplay.setText('Score: ' + gameStats.score);
+        //highScoreDisplay.setText('High Score: ' + Math.max(gameStats.score, gameStats.highScore));
+        if (gameStats.score >= 10000 && !gameStats.livesEarned) {
+            extraLife();
+        }
+    },
+
     update: function(){
         if (gameStats.inPlay) {
 
@@ -198,12 +229,12 @@ var levelState = {
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             //this.moveEnemies();
-            //this.updateScore();
+            this.updateScore();
         }
         
-        //addSnack();
-        //this.hitSnack();
-        //this.collectSnack();
+        addSnacks();
+        //this.hitEnemy();
+        this.collectSnack();
     },
 
 }

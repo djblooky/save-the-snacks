@@ -18,11 +18,16 @@ var lifeIcon2;
 var lifeIcon3;
 var lifeIcon4;
 
+//text
+var snackScore;
+
 //steven
 var stevenX, stevenY; //player coordinates
 var stevenSize = 32; //sprite width and height
 
 //movement
+var safeTiles = [];
+//var tiles = wallLayer.getTiles(0,0, map.tileWidth, map.tileHeight);
 var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
 var current = Phaser.UP;
@@ -33,6 +38,7 @@ var directions = [null, null, null, null, null];
 var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ]; 
 
 //timers
+//var snackTimer = new Timer(game, autoDestroy);
 
 var gameStats = {
     score: 0,
@@ -46,9 +52,9 @@ var gameStats = {
     snacksAdded: false,
     swordAdded: false,
     snacks: [ //add snack images to load.js
-                {'levels': [1], 'name': 'bigDonut', 'value': 100}, 
+                {'levels': [1], 'name': 'cookieCat', 'value': 100}, 
                 {'levels': [2], 'name': 'chaaps', 'value': 300},
-                {'levels': [3,4], 'name': 'orange', 'value': 500},
+                {'levels': [3,4], 'name': 'bigDonut', 'value': 500},
                 {'levels': [5,6], 'name': 'apple', 'value': 700},
                 {'levels': [7,8], 'name': 'pear', 'value': 1000},
                 {'levels': [9,10,11,12], 'name': 'pineapple', 'value': 2000}
@@ -69,14 +75,44 @@ var gameStats = {
 
     invincibilityTime: 5000,
     warningTime: 3000,
-    //dotsLeft: 205
+    snackRespawnTime: 500,
+}
+
+function getSafeTiles(){
+    for (var i=0; i < tiles.length; i++) {  
+        if (terrain[i].index==safetile) {   
+             safeTiles.push(terrain[i]);  
+            }
+        }
+}
+
+function getSnackX(){
+    var snackX = 10;
+
+    //range between map.tileWidth and 32, excluding unsafe tiles
+    x = Math.random() * map.tileWidth;
+    if(wallLayer.getTileX(x) === safetile){ //if x and y match any safe tile coors, return coords. else, reshuffle random
+
+    }
+
+    return snackX;
+}
+
+function getSnackY(){
+    var snackY = 10;
+
+    //range between map.tileHeight and 32, excluding unsafe tiles
+    Math.random() * map.tileHeight;
+
+    return snackY;
 }
 
 function addSnacks() {
     if (!gameStats.snacksAdded) { //can add a condition for snacks added here
         gameStats.snacksAdded = true;
+        //console.log('snack added is true');
         var currentSnack = gameStats.snacks.find(snack => snack.levels.includes(gameStats.level));
-        snacks = this.game.add.sprite(190, 305, currentSnack.name); 
+        snacks = this.game.add.sprite(getSnackX(), getsnackY(), currentSnack.name); //randomly place snacks
         snacks.anchor.setTo(0.5);
         this.game.physics.arcade.enable(snacks);
     }
@@ -92,11 +128,16 @@ function addSword(){
     }
 }
 
+function pauseGame(){
+    
+}
+
 function addUI() {
     scoreDisplay = this.game.add.text(game.world.centerX, 15, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 }); //score display at top center
     
         //pause button
-	    pause = this.game.add.button(345, 15, 'pause', function() {
+	    pause = this.game.add.button(360, 15, 'pause', function() {
+            pauseGame();
 			this.game.state.start('pause');
 		});
         
@@ -116,15 +157,15 @@ function addUI() {
 function addLifeIcons() {
     switch (gameStats.lives) {
         case 1:
-            lifeIcon2 = this.game.add.sprite(45, 540, 'life-icon');
+            lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
             lifeIcon2.anchor.setTo(0.5);
             break;
         case 2:
-            lifeIcon3 = this.game.add.sprite(65, 540, 'life-icon');
+            lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
             lifeIcon3.anchor.setTo(0.5);
             break;
         case 3:
-            lifeIcon4 = this.game.add.sprite(85, 540, 'life-icon');
+            lifeIcon4 = this.game.add.sprite(85, 530, 'life-icon');
             lifeIcon4.anchor.setTo(0.5);
             break;
     }

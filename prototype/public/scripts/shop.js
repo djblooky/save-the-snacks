@@ -11,15 +11,18 @@ var shopState = {
     },
 
     addBackground: function() {
-		this.game.add.image(0, 0, 'shopbackground');
+        this.game.add.image(0, 0, 'shopBackground');
+        
     },
 
     addGraphics: function(){ //add character/item art
         
+        [].forEach(s => s.anchor.setTo(0.5));
     },
     
     addButtonUI: function(){ 
 
+        [].forEach(s => s.anchor.setTo(0.5));
     },
     
     create: function(){
