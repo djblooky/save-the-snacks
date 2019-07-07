@@ -198,9 +198,9 @@ var levelState = {
             }); 
 
             if(gotSnack){
-                //wait for timer to respawn snack
-                this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
+                //wait for timer to respawn snack 
                 getRandomTile(); //get new tile for next snack to spawn on
+                this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
                 //console.log('snack added is false');
             }    
         }
