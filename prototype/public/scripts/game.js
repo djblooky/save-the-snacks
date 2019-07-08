@@ -90,7 +90,7 @@ function getRandomTile(){
         console.log('snack coords: ' +x + ','+y)
 
        // try{
-            tileIndex = map.getTile(x, y, wallLayer, true).index; //get the tile index at those coords
+            tileIndex = map.getTile(1, 1, wallLayer, true).index; //get the tile index at those coords
        // }
        // catch(e){
             //tileIndex =5; //was null
