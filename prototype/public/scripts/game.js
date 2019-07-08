@@ -85,8 +85,8 @@ console.log("getRandomTile call")
     do{
         var randPoint = new Phaser.Point();
 
-        randPoint.x = Math.floor(Math.random() * (12 - 1 + 1)) + 1; //random num 1-12
-        randPoint.y = Math.floor(Math.random() * (16 - 1 + 1)) + 1; //randomnum 1-16
+        randPoint.x = Math.floor(Math.random() * (384 - 1 + 1)) + 1; //random num 1-12
+        randPoint.y = Math.floor(Math.random() * (512 - 1 + 1)) + 1; //randomnum 1-16
 
         point.x = game.math.snapToFloor(Math.floor(randPoint.x), map.tileWidth) / map.tileWidth;
         point.y = game.math.snapToFloor(Math.floor(randPoint.y), map.tileHeight) / map.tileHeight;
@@ -107,8 +107,8 @@ console.log("getRandomTile call")
         console.log('tileIndex: ' + tileIndex);
 
         if(tileIndex === safetile){ //if that tile is a safe tile, save coords to allow snack to spawn
-            tileMark.x = point.x;
-            tileMark.y = point.y;
+            tileMark.x = point.x +1;
+            tileMark.y = point.y +1;
         }
 
     }while(tileIndex !== safetile); //keep searching for random tile until it is a safe tile
