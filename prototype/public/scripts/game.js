@@ -1,4 +1,4 @@
-var buildNumber = 2;
+var buildNumber = 3;
 
 //stage
 var map;
@@ -80,7 +80,7 @@ var gameStats = {
 }
 
 function getRandomTile(){
-console.log("getRandomTile call")
+    //console.log("getRandomTile call")
     var point = new Phaser.Point();
     var tileIndex;
 
@@ -93,20 +93,12 @@ console.log("getRandomTile call")
         point.x = game.math.snapToFloor(Math.floor(randPoint.x), map.tileWidth) / map.tileWidth;
         point.y = game.math.snapToFloor(Math.floor(randPoint.y), map.tileHeight) / map.tileHeight;
 
-        console.log('snack coords: ' + point.x + ','+point.y)
+        //console.log('snack coords: ' + point.x + ','+point.y)
 
-        //x = 2;
-        //y = 2;
-
-       // try{
-            tile = map.getTile(point.x, point.y, wallLayer, true); //wallLayer.index
-            tileIndex = tile.index; //get the tile index at those coords
-       // }
-       // catch(e){
-            //tileIndex =5; //was null
-       // }
+        tile = map.getTile(point.x, point.y, wallLayer, true); //wallLayer.index
+        tileIndex = tile.index; //get the tile index at those coords
         
-        console.log('tileIndex: ' + tileIndex);
+        //console.log('tileIndex: ' + tileIndex);
 
         if(tileIndex === safetile){ //if that tile is a safe tile, save coords to allow snack to spawn
             tileMark.x = point.x + 1;
@@ -130,7 +122,7 @@ function getSnackY(){
 function addSnacks() {
     if (!gameStats.snacksAdded) { //can add a condition for snacks added here
         gameStats.snacksAdded = true;
-        console.log('snack added is true (addSnacks call)');
+        //console.log('snack added is true (addSnacks call)');
         var currentSnack = gameStats.snacks.find(snack => snack.levels.includes(gameStats.level));
         snacks = this.game.add.sprite(getSnackX(), getSnackY(), currentSnack.name); //randomly place snacks
         snacks.anchor.setTo(0.5);
