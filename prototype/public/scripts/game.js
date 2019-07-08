@@ -1,3 +1,5 @@
+var buildNumber = 2;
+
 //stage
 var map;
 var wallLayer;
