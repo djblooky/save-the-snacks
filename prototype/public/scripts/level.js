@@ -194,13 +194,14 @@ var levelState = {
                 gameStats.score += currentsnack.value;
                 snackScore = game.add.text(190, 305, currentsnack.value, { 'fill': 'white', 'fontSize': 25 });
                 snackScore.anchor.setTo(0.5);
-                snackScore.lifespan = 1000;   
+                snackScore.lifespan = 800;   
                 gotSnack = true;
             }); 
 
             if(gotSnack){
                 //wait for timer to respawn snack
                 this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
+                getRandomTile();
                 //console.log('snack added is false');
             }    
         }
