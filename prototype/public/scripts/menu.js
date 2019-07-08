@@ -8,9 +8,16 @@ var menuState = {
     
 	addBackground: function() {
 		this.game.add.image(0, 0, 'menubackground');
-	},
+    },
+    
+    resetGame:function(){
+        gameStats.score = 0;
+        gameStats.coins = 0;
+
+    },
 	
     create: function() {
+        this.resetGame();
 		this.addBackground();
 		
         var title = this.game.add.image(game.world.centerX, 50, 'title');

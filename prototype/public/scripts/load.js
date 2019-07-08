@@ -12,6 +12,7 @@ var loadState = {
         this.game.load.image('exit', 'exit_button.png');
         
         this.game.load.spritesheet('steven', 'steven.png', stevenSize, stevenSize);
+        this.game.load.spritesheet('shrimp', 'shrimp.png',32,32);
 		
         this.game.load.image('life-icon', 'star.png');
         

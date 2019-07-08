@@ -5,8 +5,6 @@ var levelState = {
         this.addPhysics();
         this.addControls();
         addUI(); //from game.js
-        //getSafeTiles();
-        //console.log(safeTiles);
 
         getRandomTile(); //find tile for snack to spawn
         gameStats.snacksAdded = false; //snack can be added
@@ -53,7 +51,16 @@ var levelState = {
     },
 
     createEnemies: function(){
+        enemies = this.game.add.group();
 
+        crystalShrimp = enemies.create(144, 112, 'shrimp'); //get random x and y
+        //redCrystalShrimp
+
+        enemies.setAll('anchor.x', 0.5);
+        enemies.setAll('anchor.y', 0.5);
+        enemies.setAll('frame', 0);
+        
+        enemies.forEachExists(enemy => enemy.mobilized = false);
     },
 
     updateStevenPosition: function() {
@@ -185,7 +192,6 @@ var levelState = {
     },
 
     collectSnack: function() {
-        console.log("collectSnack call")
         var gotSnack = false;
         if (snacks) {
             this.game.physics.arcade.overlap(steven, snacks, function() {
@@ -199,8 +205,8 @@ var levelState = {
             }); 
 
             if(gotSnack){
-                //wait for timer to respawn snack
-                this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
+                
+                this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;}); //wait for timer to respawn snack
                 getRandomTile();
                 //console.log('snack added is false');
             }    

@@ -7,7 +7,9 @@ var wallLayer;
 //sprites
 var steven; //player
 
+var enemies; //group for all enemies
 var crystalShrimp; //base enemy
+//var redCrystalShrimp;
 
 var snacks;
 var sword;
@@ -69,10 +71,8 @@ var gameStats = {
     crystalShrimpVelocity: 80,
     redCrystalShrimpVelocity: 80,
     
-    //redGhostMoveDelay: 1000,
+    crystalShrimpMoveDelay: 1000,
     //pinkGhostMoveDelay: 2000,
-    //orangeGhostMoveDelay: 5000,
-    //turquoiseGhostMoveDelay: 6000,
 
     invincibilityTime: 5000,
     warningTime: 3000,
@@ -143,6 +143,7 @@ function addSword(){
 function pauseGame(){
     //save steven's position
     //save enemies' positions
+    //save snacks' positions
 }
 
 function addUI() {
