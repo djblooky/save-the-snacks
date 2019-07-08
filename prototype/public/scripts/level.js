@@ -185,6 +185,7 @@ var levelState = {
     },
 
     collectSnack: function() {
+        console.log("collectSnack call")
         var gotSnack = false;
         if (snacks) {
             this.game.physics.arcade.overlap(steven, snacks, function() {
@@ -201,7 +202,7 @@ var levelState = {
                 //wait for timer to respawn snack 
                 getRandomTile(); //get new tile for next snack to spawn on
                 this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
-                //console.log('snack added is false');
+                console.log('snack added is false');
             }    
         }
     },
