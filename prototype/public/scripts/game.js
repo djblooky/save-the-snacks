@@ -107,13 +107,8 @@ console.log("getRandomTile call")
         console.log('tileIndex: ' + tileIndex);
 
         if(tileIndex === safetile){ //if that tile is a safe tile, save coords to allow snack to spawn
-<<<<<<< Updated upstream
-            tileMark.x = point.x +1;
-            tileMark.y = point.y +1;
-=======
             tileMark.x = point.x + 1;
             tileMark.y = point.y + 1;
->>>>>>> Stashed changes
         }
 
     }while(tileIndex !== safetile); //keep searching for random tile until it is a safe tile
