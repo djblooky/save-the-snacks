@@ -1,15 +1,20 @@
 var levelState = {
 
     create: function() {
-        this.loadGraphics();
-        this.loadPhysics();
-        this.loadControls();
-        loadScoreBoard(); //from game.js
+        this.addGraphics();
+        this.addPhysics();
+        this.addControls();
+        addUI(); //from game.js
+        //getSafeTiles();
+        //console.log(safeTiles);
+
+        getRandomTile(); //find tile for snack to spawn
+        gameStats.snacksAdded = false; //snack can be added
 
         this.moveSteven(Phaser.DOWN);
     },
 
-    loadGraphics: function(){
+    addGraphics: function(){
         this.createStage();
         this.createPlayer();
         this.createEnemies();
@@ -17,7 +22,7 @@ var levelState = {
         //this.animateEnemies();
     },
 
-    loadPhysics : function(){
+    addPhysics : function(){
         this.game.physics.arcade.enable(steven);
         //enable physics for each kind of enemy
 
@@ -30,7 +35,7 @@ var levelState = {
         gameStats.inPlay = true;
     },
 
-    loadControls: function(){
+    addControls: function(){
         cursors = this.game.input.keyboard.createCursorKeys();
     },
 
@@ -179,6 +184,37 @@ var levelState = {
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
     },
 
+    collectSnack: function() {
+        console.log("collectSnack call")
+        var gotSnack = false;
+        if (snacks) {
+            this.game.physics.arcade.overlap(steven, snacks, function() {
+                snacks.destroy();
+                var currentsnack = gameStats.snacks.find(snacks => snacks.levels.includes(gameStats.level));
+                gameStats.score += currentsnack.value;
+                snackScore = game.add.text(190, 305, currentsnack.value, { 'fill': 'white', 'fontSize': 25 });
+                snackScore.anchor.setTo(0.5);
+                snackScore.lifespan = 1000;   
+                gotSnack = true;
+            }); 
+
+            if(gotSnack){
+                //wait for timer to respawn snack 
+                getRandomTile(); //get new tile for next snack to spawn on
+                this.game.time.events.add(gameStats.snackRespawnTime, function(){gameStats.snacksAdded = false;});
+                console.log('snack added is false');
+            }    
+        }
+    },
+
+    updateScore: function() {
+        scoreDisplay.setText('Score: ' + gameStats.score);
+        //highScoreDisplay.setText('High Score: ' + Math.max(gameStats.score, gameStats.highScore));
+        if (gameStats.score >= 10000 && !gameStats.livesEarned) {
+            extraLife();
+        }
+    },
+
     update: function(){
         if (gameStats.inPlay) {
 
@@ -198,12 +234,12 @@ var levelState = {
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             //this.moveEnemies();
-            //this.updateScore();
+            this.updateScore();
         }
         
-        //addSnack();
-        //this.hitSnack();
-        //this.collectSnack();
+        addSnacks();
+        //this.hitEnemy();
+        this.collectSnack();
     },
 
 }
