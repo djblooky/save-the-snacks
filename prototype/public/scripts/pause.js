@@ -26,7 +26,7 @@ var pauseState = {
 
     addText: function(){
         pauseText = this.game.add.text(game.world.centerX, game.world.centerY, "The game is paused. \n(except there's no logic for that yet)", { 'fill': 'white', 'fontSize': 16 });
-        buildText = this.game.add.text(40, 540, 'Build 1', { 'fill': 'white', 'fontSize': 14 });
+        buildText = this.game.add.text(40, 540, 'Build ' + buildNumber, { 'fill': 'white', 'fontSize': 14 });
 
         [pauseText, buildText].forEach(s => s.anchor.setTo(0.5));
     },
