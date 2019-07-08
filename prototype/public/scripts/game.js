@@ -87,16 +87,8 @@ function getRandomTile(){
     do{
         x = Math.floor(Math.random() * (12 - 1 + 1)) + 1; //random tile coords, 1-height/width
         y = Math.floor(Math.random() * (16 - 1 + 1)) + 1; //12 = map width, 16 = map height
-        console.log('snack coords: ' +x + ','+y)
-
-       // try{
-            tileIndex = map.getTile(x, y, wallLayer, true).index; //get the tile index at those coords
-       // }
-       // catch(e){
-            //tileIndex =5; //was null
-       // }
-        
-        console.log('tileIndex: ' + tileIndex);
+    
+        tileIndex = map.getTile(x, y, wallLayer, true).index; //get the tile index at those coords
 
         if(tileIndex === safetile){ //if that tile is a safe tile, save coords to allow snack to spawn
             xTile = x;
