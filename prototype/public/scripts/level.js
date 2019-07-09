@@ -87,7 +87,7 @@ var levelState = {
     createEnemies: function(){
         enemies = this.game.add.group();
 
-        crystalShrimp = enemies.create(144, 464, 'shrimp'); //get random x and y
+        crystalShrimp = enemies.create(336, 48, 'shrimp'); //get random x and y
         //redCrystalShrimp = enemies.create(144, 112, 'redShrimp');
 
         enemies.setAll('anchor.x', 0.5);
@@ -140,7 +140,7 @@ var levelState = {
     
     resetEnemy: function(enemy) {
         switch (enemy) {
-            case crystalShrimp: enemy.position.setTo(144,464); break;
+            case crystalShrimp: enemy.position.setTo(336, 48); break;
             //case orangeGhost: ghost.position.setTo(180, 255); break;
             //case pinkGhost: ghost.position.setTo(205, 255); break;
             //case turquoiseGhost: ghost.position.setTo(230, 255); break;
@@ -261,7 +261,7 @@ var levelState = {
                         
                         enemy.body.velocity.x = 0;
                         enemy.body.velocity.y = direction == 'up' ? -enemyVelocity : enemyVelocity;
-                        enemy.direction = 'down';
+                        //enemy.direction = 'down';
                     }
                     
                     
