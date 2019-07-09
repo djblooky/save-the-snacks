@@ -87,7 +87,7 @@ var levelState = {
     createEnemies: function(){
         enemies = this.game.add.group();
 
-        crystalShrimp = enemies.create(144, 112, 'shrimp'); //get random x and y
+        crystalShrimp = enemies.create(144, 480, 'shrimp'); //get random x and y
         //redCrystalShrimp = enemies.create(144, 112, 'redShrimp');
 
         enemies.setAll('anchor.x', 0.5);
@@ -130,8 +130,34 @@ var levelState = {
         //put enemies in vulnerable mode
     },
 
+    resetSteven: function() {
+        steven.body.velocity.x = gameStats.stevenVelocity;
+        steven.body.velocity.y = 0;
+        steven.x = gameStats.stevenStartingX;
+        steven.y = gameStats.stevenStartingY;
+        steven.frame = 0;
+    },
+    
+    resetEnemy: function(enemy) {
+        switch (enemy) {
+            case crystalShrimp: enemy.position.setTo(300,300); break;
+            //case orangeGhost: ghost.position.setTo(180, 255); break;
+            //case pinkGhost: ghost.position.setTo(205, 255); break;
+            //case turquoiseGhost: ghost.position.setTo(230, 255); break;
+        }
+        enemy.mobilized = false;
+    },
+    
+    removeLifeIcons: function() {
+        switch (gameStats.lives) {
+            case 3: lifeIcon3.kill(); break;
+            case 2: lifeIcon2.kill(); break;
+            case 1: lifeIcon1.kill(); break;
+        }
+    },
+
     loseLife: function() {
-        levelState.resetPacman();
+        levelState.resetSteven();
         enemies.forEachExists(enemy => levelState.resetEnemy(enemy));
         levelState.removeLifeIcons();
         gameStats.lives--;
@@ -143,6 +169,12 @@ var levelState = {
         }
         
         this.game.time.events.add(500, function() { gameStats.inPlay = true });
+    },
+
+    gameOver: function() {
+        steven.animations.stop();
+        enemies.forEachExists(enemy => enemy.animations.stop());
+        game.state.start('gameover');
     },
 
     hitEnemy: function() {

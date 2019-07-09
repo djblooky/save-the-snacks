@@ -2,10 +2,11 @@ var shopState = {
    
     preload: function(){
         this.game.load.image('shopBackground', 'sky.png'); //shop_bg.png
+        
         //load button ui
         //purchase button
         //to title button
-        //play button
+        this.game.load.image('play', 'playbutton.png');//play button
 
         //load character/item art
     },
@@ -22,7 +23,13 @@ var shopState = {
     
     addButtonUI: function(){ 
 
-        [].forEach(s => s.anchor.setTo(0.5));
+      //add play button
+        play = this.game.add.button(15, 15, 'backButton', function() {
+            this.game.state.start('level');
+         });
+    
+
+        [play].forEach(s => s.anchor.setTo(0.5));
     },
     
     create: function(){

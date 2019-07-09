@@ -6,7 +6,7 @@ this.game.state.add('shop', shopState);
 this.game.state.add('level', levelState)
 this.game.state.add('pause', pauseState);
 this.game.state.add('menu', menuState);
-//this.game.state.add('gameover', gameOverState);
+//this.game.state.add('results', resultsState);
 //this.game.state.add('settings', settingsState);
 
 this.game.state.start('boot'); //jumps to boot.js
