@@ -87,7 +87,7 @@ var levelState = {
     createEnemies: function(){
         enemies = this.game.add.group();
 
-        crystalShrimp = enemies.create(144, 480, 'shrimp'); //get random x and y
+        crystalShrimp = enemies.create(144, 464, 'shrimp'); //get random x and y
         //redCrystalShrimp = enemies.create(144, 112, 'redShrimp');
 
         enemies.setAll('anchor.x', 0.5);
@@ -136,11 +136,12 @@ var levelState = {
         steven.x = gameStats.stevenStartingX;
         steven.y = gameStats.stevenStartingY;
         steven.frame = 0;
+        steven.direction = 'down';
     },
     
     resetEnemy: function(enemy) {
         switch (enemy) {
-            case crystalShrimp: enemy.position.setTo(300,300); break;
+            case crystalShrimp: enemy.position.setTo(144,464); break;
             //case orangeGhost: ghost.position.setTo(180, 255); break;
             //case pinkGhost: ghost.position.setTo(205, 255); break;
             //case turquoiseGhost: ghost.position.setTo(230, 255); break;
@@ -174,7 +175,7 @@ var levelState = {
     gameOver: function() {
         steven.animations.stop();
         enemies.forEachExists(enemy => enemy.animations.stop());
-        game.state.start('gameover');
+        game.state.start('results');
     },
 
     hitEnemy: function() {
@@ -182,7 +183,7 @@ var levelState = {
             if (gameStats.inPlay) {
                 if (gameStats.swordActivated) { //if player activated a sword, enemies are vulnurable
                     //enemy.animations.play('retreat');
-                    levelState.resetenemy(enemy);
+                    levelState.resetEnemy(enemy);
                     
                     game.time.events.add(swordDuration, function() {
                         levelState.mobilizeEnemies(enemy);
