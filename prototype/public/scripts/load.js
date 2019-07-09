@@ -9,10 +9,10 @@ var loadState = {
         this.game.load.image('menubackground', 'sky.png'); 
         
         this.game.load.image('pause', 'pause_button.png');
-        this.game.load.image('exit', 'exit_button.png');
+        this.game.load.image('exit', 'back_button.png');
         
         this.game.load.spritesheet('steven', 'steven.png', stevenSize, stevenSize);
-        this.game.load.spritesheet('shrimp', 'shrimp.png', 25,32);
+        this.game.load.spritesheet('shrimp', 'shrimp.png', 32,32);
 		
         this.game.load.image('life-icon', 'star.png');
         

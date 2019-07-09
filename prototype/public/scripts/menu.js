@@ -23,12 +23,12 @@ var menuState = {
         var title = this.game.add.image(game.world.centerX, 50, 'title');
         
         //play button
-		var play = this.game.add.button(game.world.centerX, 200, 'play', function() {
+		var play = this.game.add.button(game.world.centerX - 30, game.world.centerY +200, 'play', function() {
 			this.game.state.start('level');
 		});
         
         //shop button
-		var shop = this.game.add.button(game.world.centerX, 300, 'shop', function() {
+		var shop = this.game.add.button(game.world.centerX + 50, game.world.centerY +200, 'shop', function() {
 			this.game.state.start('shop');
 		});
         

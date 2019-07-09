@@ -131,12 +131,11 @@ var levelState = {
     },
 
     resetSteven: function() {
-        steven.body.velocity.x = gameStats.stevenVelocity;
-        steven.body.velocity.y = 0;
+        steven.body.velocity.x = 0;
+        steven.body.velocity.y = gameStats.stevenVelocity;
         steven.x = gameStats.stevenStartingX;
         steven.y = gameStats.stevenStartingY;
         steven.frame = 0;
-        steven.direction = 'down';
     },
     
     resetEnemy: function(enemy) {
