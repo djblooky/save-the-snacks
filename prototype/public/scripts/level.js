@@ -20,6 +20,39 @@ var levelState = {
         //this.animateEnemies();
     },
 
+    moveEnemies: function(enemy) {
+
+        if (enemy == crystalShrimp) {
+            this.game.time.events.add(gameStats.crystalShrimpMoveDelay, function() {
+                enemy.body.velocity.y = -gameStats.enemyVelocity;
+            });
+        }
+        
+        /*
+        else if (enemy == orangeEnemy) {
+            this.game.time.events.add(gameStats.orangeEnemyMoveDelay, function() {
+                enemy.body.velocity.y = -gameStats.enemyVelocity;
+            });
+        }
+        
+        else if (enemy == pinkEnemy) {
+            this.game.time.events.add(gameStats.pinkEnemyMoveDelay, function() {
+                enemy.body.velocity.y = -gameStats.enemyVelocity;
+            });
+        }
+        
+        else {
+            this.game.time.events.add(gameStats.turquoiseEnemyMoveDelay, function() {
+                enemy.body.velocity.y = -gameStats.enemyVelocity;
+            });
+            
+        } */
+
+        enemy.direction = 'up';
+        enemy.body.velocity.x = 0;
+
+    },
+
     addPhysics : function(){
         this.game.physics.arcade.enable(steven);
         //enable physics for each kind of enemy
@@ -27,15 +60,15 @@ var levelState = {
         steven.body.velocity.x = gameStats.stevenVelocity;
         steven.body.immovable = true;
         
-        //ghosts.setAll('body.immovable', true);
+        enemies.setAll('body.immovable', true);
         
-        //ghosts.forEachExists(ghost => levelState.mobilizeGhosts(ghost));
+        enemies.forEachExists(enemy => levelState.moveEnemies(enemy));
         gameStats.inPlay = true;
-    },
+        },
 
-    addControls: function(){
-        cursors = this.game.input.keyboard.createCursorKeys();
-    },
+        addControls: function(){
+            cursors = this.game.input.keyboard.createCursorKeys();
+        },
 
     createStage: function() {
         map = this.game.add.tilemap('map');
@@ -54,7 +87,7 @@ var levelState = {
         enemies = this.game.add.group();
 
         crystalShrimp = enemies.create(144, 112, 'shrimp'); //get random x and y
-        //redCrystalShrimp
+        //redCrystalShrimp = enemies.create(144, 112, 'redShrimp');
 
         enemies.setAll('anchor.x', 0.5);
         enemies.setAll('anchor.y', 0.5);
@@ -78,6 +111,48 @@ var levelState = {
         if (steven.left <= 0 && current === 1) {
             steven.left = game.world.right;
         }
+    },
+
+    createSwordButton(){
+        //button = new button
+            //this.activateSword()
+    },
+
+    collectSword: function(){
+        //if colliding with sword sprite
+            //this.createSwordButton()
+            //create button on dock that
+    },
+
+    activateSword: function(){
+        gameStats.swordActivated = true;
+        //put enemies in vulnerable mode
+    },
+
+    hitEnemy: function() {
+        this.game.physics.arcade.collide(pacman, enemies, function(sprite, enemy) {
+            if (gameStats.inPlay) {
+                if (gameStats.swordActivated) { //if player activated a sword, enemies are vulnurable
+                    //enemy.animations.play('retreat');
+                    levelState.resetenemy(enemy);
+                    
+                    game.time.events.add(swordDuration, function() {
+                        levelState.moveEnemies(enemy);
+                    });
+
+                    gameStats.swordActivated = false;
+                    
+                    levelState.displayHitScore();
+                    
+                    gameStats.coins += gameStats.enemyCoinValue;
+                    gameStats.enemyCoinValue *= multiplier;
+
+                }
+                else {
+                    levelState.loseLife();
+                }
+            }
+        });
     },
 
     hitWall: function() {
@@ -239,12 +314,12 @@ var levelState = {
             this.wrapAround();
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
-            //this.moveEnemies();
+            this.moveEnemies();
             this.updateScore();
         }
         
         addSnacks();
-        //this.hitEnemy();
+        this.hitEnemy();
         this.collectSnack();
     },
 

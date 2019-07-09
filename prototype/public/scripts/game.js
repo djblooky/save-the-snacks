@@ -51,7 +51,8 @@ var gameStats = {
     lives: 3,
     livesEarned: 0,
     inPlay: false,
-    invincible: false,
+    swordActivated: false,
+    swordDuration: 3000,
     snacksAdded: false,
     swordAdded: false,
     snacks: [ //add snack images to load.js
@@ -67,12 +68,12 @@ var gameStats = {
     stevenStartingX: 32 + (stevenSize/2),
     stevenStartingY: 32 + (stevenSize/2),
 
-    crystalShrimpPointValue: 200,
-    crystalShrimpVelocity: 80,
-    redCrystalShrimpVelocity: 80,
+    enemyCoinValue: 200,
+    multiplier: 2,
+
+    enemyVelocity: 80,
     
     crystalShrimpMoveDelay: 1000,
-    //pinkGhostMoveDelay: 2000,
 
     invincibilityTime: 5000,
     warningTime: 3000,
