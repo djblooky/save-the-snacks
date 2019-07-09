@@ -71,6 +71,7 @@ var gameStats = {
     enemyCoinValue: 200,
     multiplier: 2,
 
+    crystalShrimpVelocity: 80,
     enemyVelocity: 80,
     
     crystalShrimpMoveDelay: 1000,

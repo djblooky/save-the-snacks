@@ -20,7 +20,7 @@ var levelState = {
         //this.animateEnemies();
     },
 
-    moveEnemies: function(enemy) {
+    mobilizeEnemies: function(enemy) {
 
         if (enemy == crystalShrimp) {
             this.game.time.events.add(gameStats.crystalShrimpMoveDelay, function() {
@@ -55,14 +55,15 @@ var levelState = {
 
     addPhysics : function(){
         this.game.physics.arcade.enable(steven);
-        //enable physics for each kind of enemy
+        this.game.physics.arcade.enable(enemies);
 
         steven.body.velocity.x = gameStats.stevenVelocity;
         steven.body.immovable = true;
         
         enemies.setAll('body.immovable', true);
+        //enemies.forEach(enemy => enemy.body.immovable.setTo(true));
         
-        enemies.forEachExists(enemy => levelState.moveEnemies(enemy));
+        enemies.forEachExists(enemy => levelState.mobilizeEnemies(enemy));
         gameStats.inPlay = true;
         },
 
@@ -129,15 +130,30 @@ var levelState = {
         //put enemies in vulnerable mode
     },
 
+    loseLife: function() {
+        levelState.resetPacman();
+        enemies.forEachExists(enemy => levelState.resetEnemy(enemy));
+        levelState.removeLifeIcons();
+        gameStats.lives--;
+        gameStats.inPlay = false;
+        enemies.forEach(enemy => levelState.mobilizeEnemies(enemy));
+        
+        if (gameStats.lives == 0) {
+            levelState.gameOver();
+        }
+        
+        this.game.time.events.add(500, function() { gameStats.inPlay = true });
+    },
+
     hitEnemy: function() {
-        this.game.physics.arcade.collide(pacman, enemies, function(sprite, enemy) {
+        this.game.physics.arcade.collide(steven, enemies, function(sprite, enemy) {
             if (gameStats.inPlay) {
                 if (gameStats.swordActivated) { //if player activated a sword, enemies are vulnurable
                     //enemy.animations.play('retreat');
                     levelState.resetenemy(enemy);
                     
                     game.time.events.add(swordDuration, function() {
-                        levelState.moveEnemies(enemy);
+                        levelState.mobilizeEnemies(enemy);
                     });
 
                     gameStats.swordActivated = false;
@@ -161,6 +177,65 @@ var levelState = {
             steven.animations.stop();
         }, null, this);*/
         this.game.physics.arcade.collide(steven, wallLayer);
+    },
+
+    getEnemyVelocity: function(enemy) {
+        return enemy == crystalShrimp ? gameStats.crystalShrimpVelocity : gameStats.enemyVelocity;
+    },
+
+    moveEnemies: function() {
+        enemies.forEachExists(function(enemy) {
+            
+            if (enemy.y <= 210) {
+                enemy.mobilized = true;
+            }
+            
+            if (enemy.mobilized) {
+                this.game.physics.arcade.collide(enemy, wallLayer, function() {
+                    
+                    if (enemy.direction == 'up' ) {
+                        enemy.y++;
+                        
+                        var direction = Math.random() > 0.5 ? 'left' : 'right';
+                        var enemyVelocity = levelState.getEnemyVelocity();
+                        enemy.body.velocity.y = 0;
+                        enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : enemyVelocity;
+                        enemy.direction = direction;
+                    }
+                    
+                    else if (enemy.direction == 'down') {
+                        enemy.y--;
+                        var direction = Math.random() > 0.5 ? 'left' : 'right';
+                        var enemyVelocity = levelState.getEnemyVelocity();
+                        enemy.body.velocity.y = 0;
+                        enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : enemyVelocity;
+                        enemy.direction = direction;
+                    }
+                    
+                    else if (enemy.direction == 'left') {
+                        enemy.x++;
+                        var direction = Math.random() > 0.5 ? 'up': 'down';
+                        var enemyVelocity = levelState.getEnemyVelocity();
+                        
+                        enemy.body.velocity.x = 0;
+                        enemy.body.velocity.y = direction == 'up' ? -enemyVelocity : enemyVelocity;
+                        enemy.direction = direction;
+                    }
+                    
+                    else {
+                        enemy.x--;
+                        var direction = Math.random() > 0.5 ? 'up' : 'down';
+                        var enemyVelocity = levelState.getEnemyVelocity();
+                        
+                        enemy.body.velocity.x = 0;
+                        enemy.body.velocity.y = direction == 'up' ? -enemyVelocity : enemyVelocity;
+                        enemy.direction = 'down';
+                    }
+                    
+                    
+                }, null, this);
+            }
+        });
     },
 
     getMoveKey: function(){
@@ -307,9 +382,9 @@ var levelState = {
             }
 
             if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
-                 {
-                    this.turnSteven();
-                 }
+             {
+                  this.turnSteven();
+             }
 
             this.wrapAround();
             this.hitWall();
