@@ -209,11 +209,42 @@ var levelState = {
             steven.animations.stop();
         }, null, this);*/
         this.game.physics.arcade.collide(steven, wallLayer);
-        //this.game.physics.arcade.collide(enemy, wallLayer);
+
+        enemies.forEachExists(function(enemy){
+            this.game.physics.arcade.collide(enemy, wallLayer);
+        });
+        
     },
 
     getEnemyVelocity: function(enemy) {
         return enemy == crystalShrimp ? gameStats.crystalShrimpVelocity : gameStats.enemyVelocity;
+    },
+
+    decideEnemyMovement: function(enemy) {
+                   
+
+        if (enemy.direction == 'up' ) {
+            y = 1;
+            
+        }
+        
+        else if (enemy.direction == 'down') {
+            y = -1;
+        }
+        
+        else if (enemy.direction == 'left') {
+            x = 1;
+        }
+        
+        else {
+            x = -1;
+        }
+     
+    },
+
+    enemyUpdate: function(enemy){
+        enemy.y += y;
+        enemy.x += x;
     },
 
     moveEnemies: function() {
@@ -223,50 +254,64 @@ var levelState = {
                 enemy.mobilized = true;
             }
             
-            if (enemy.mobilized) {
-                this.game.physics.arcade.collide(enemy, wallLayer, function() {
-                    
-                    if (enemy.direction == 'up' ) {
-                        enemy.y++;
+            if (enemy.mobilized && !enemyMoving) {
+
+                enemyMoving = true;
+                var enemyMark = new Phaser.Point();
+                var delay = 1000;
+
+                this.game.time.events.add(delay, function(){ //wait x seconds before trying to move a new direction
+
+                    enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
+                    enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
+                    console.log(enemyMark.x + "," +enemyMark.y);
+
+                    if(map.getTileLeft(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile){ //move if there are safe tiles around
                         
-                        var direction = Math.random() > 0.5 ? 'left' : 'right';
+                        levelState.decideEnemyMovement(enemy);
+                        var direction = Math.random() > 0.5 ? 'left' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
                         enemy.body.velocity.y = 0;
                         enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : enemyVelocity;
                         enemy.direction = direction;
-                    }
-                    
-                    else if (enemy.direction == 'down') {
-                        enemy.y--;
-                        var direction = Math.random() > 0.5 ? 'left' : 'right';
+                        
+                        
+                      }
+                      else if(map.getTileRight(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile){
+                        
+                        levelState.decideEnemyMovement(enemy);
+                        var direction = Math.random() > 0.5 ? 'right' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
                         enemy.body.velocity.y = 0;
-                        enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : enemyVelocity;
+                        enemy.body.velocity.x = direction == 'right' ? enemyVelocity : -enemyVelocity;
                         enemy.direction = direction;
-                    }
-                    
-                    else if (enemy.direction == 'left') {
-                        enemy.x++;
-                        var direction = Math.random() > 0.5 ? 'up': 'down';
+
+                      }
+                      else if(map.getTileAbove(wallLayer.index, enemyMark.x + 1, enemyMark.y +1).index == safetile){
+                        levelState.decideEnemyMovement(enemy);
+                        var direction = Math.random() > 0.5 ? 'up' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
-                        
+                        enemy.body.velocity.y = direction == 'up' ? enemyVelocity : -enemyVelocity;
                         enemy.body.velocity.x = 0;
-                        enemy.body.velocity.y = direction == 'up' ? -enemyVelocity : enemyVelocity;
                         enemy.direction = direction;
-                    }
-                    
-                    else {
-                        enemy.x--;
-                        var direction = Math.random() > 0.5 ? 'up' : 'down';
-                        var enemyVelocity = levelState.getEnemyVelocity();
+
+                      }
+                      else if(map.getTileBelow(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1).index == safetile){
                         
+                        levelState.decideEnemyMovement(enemy);
+                        var direction = Math.random() > 0.5 ? 'down' : enemy.direction; //50% chance to turn or keep goin
+                        var enemyVelocity = levelState.getEnemyVelocity();
+                        enemy.body.velocity.y = direction == 'down' ? -enemyVelocity : enemyVelocity;
                         enemy.body.velocity.x = 0;
-                        enemy.body.velocity.y = direction == 'up' ? -enemyVelocity : enemyVelocity;
-                        enemy.direction = 'down';
-                    }
-                    
-                    
-                });
+                        enemy.direction = direction;
+
+                      }
+                      /*
+                      else{ //turn on collision if not at paths
+                          this.game.physics.arcade.collide(enemy, wallLayer, this.decideEnemyMovement());
+                      }  */
+                      enemyMoving = false;
+                });      
             }
         });
     },
@@ -372,6 +417,11 @@ var levelState = {
         directions[2] = map.getTileRight(wallLayer.index, marker.x, marker.y);
         directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
+
+        directions[1] = map.getTileLeft(wallLayer.index, marker.x, marker.y);
+        directions[2] = map.getTileRight(wallLayer.index, marker.x, marker.y);
+        directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
+        directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
     },
 
     collectSnack: function() {
@@ -420,9 +470,10 @@ var levelState = {
              }
 
             this.wrapAround();
+            this.moveEnemies();
+            enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);});
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
-            this.moveEnemies();
             this.updateScore();
         }
         
