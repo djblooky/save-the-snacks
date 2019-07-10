@@ -24,7 +24,7 @@ var levelState = {
 
         if (enemy == crystalShrimp) {
             this.game.time.events.add(gameStats.crystalShrimpMoveDelay, function() {
-                enemy.body.velocity.y = -gameStats.enemyVelocity;
+                enemy.body.velocity.y = gameStats.enemyVelocity; //begins moving down
             });
         }
         
@@ -209,6 +209,7 @@ var levelState = {
             steven.animations.stop();
         }, null, this);*/
         this.game.physics.arcade.collide(steven, wallLayer);
+        //this.game.physics.arcade.collide(enemy, wallLayer);
     },
 
     getEnemyVelocity: function(enemy) {
@@ -218,7 +219,7 @@ var levelState = {
     moveEnemies: function() {
         enemies.forEachExists(function(enemy) {
             
-            if (enemy.y <= 210) {
+            if (enemy.y >= 55) {
                 enemy.mobilized = true;
             }
             
@@ -261,11 +262,11 @@ var levelState = {
                         
                         enemy.body.velocity.x = 0;
                         enemy.body.velocity.y = direction == 'up' ? -enemyVelocity : enemyVelocity;
-                        //enemy.direction = 'down';
+                        enemy.direction = 'down';
                     }
                     
                     
-                }, null, this);
+                });
             }
         });
     },
