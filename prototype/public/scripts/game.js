@@ -40,8 +40,10 @@ var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];
 var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ]; 
 
+var enemyDirections = [null, null, null, null, null];
+var enemyMark = new Phaser.Point();
 var enemyMoving = false;
-var enemyUpdate = false;
+var enemyTurning = false;
 var x = 0;
 var y = 0; 
 

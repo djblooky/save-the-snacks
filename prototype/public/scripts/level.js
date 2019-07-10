@@ -224,28 +224,62 @@ var levelState = {
     decideEnemyMovement: function(enemy) {
                    
 
-        if (enemy.direction == 'up' ) {
+        if (enemy.direction == 'up' ) { //and up is a possible enemyDirection
             y = 1;
             
         }
         
-        else if (enemy.direction == 'down') {
+        else if (enemy.direction == 'down') { //and down is a possible enemyDirection
             y = -1;
         }
         
-        else if (enemy.direction == 'left') {
+        else if (enemy.direction == 'left') { //and left is a possible enemyDirection
             x = 1;
         }
         
-        else {
+        else { //and right is a possible enemyDirection
             x = -1;
         }
-     
+        //else x,y = 0?
     },
 
     enemyUpdate: function(enemy){
-        enemy.y += y;
-        enemy.x += x;
+        
+        if(enemy.direction == 'up' || enemy.direction == 'down'){
+            enemy.y += y;
+        }
+        else if(enemy.direction == 'left' || enemy.direction == 'right'){
+            enemy.x += x;
+        }
+     
+        if(enemyTurning){
+            enemyTurning = false;
+            var turn = new Phaser.Point();
+            turn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //check
+            turn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); //check
+
+            //turn logic for enemy
+            var ex = Math.floor(enemy.x); //get steven's x/y coords
+            var ey = Math.floor(enemy.y);
+
+            //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
+            if (!this.math.fuzzyEqual(ex, turn.x, threshold) || !this.math.fuzzyEqual(ey, turn.y, threshold))
+            {
+                return false;
+            }
+
+            enemy.x = turn.x;
+            enemy.y = turn.y;
+            enemy.body.reset(turn.x, turn.y);
+
+            //this.moveSteven(enemyTurning);
+
+            //console.log("turned " + willTurn)
+
+            //willTurn = Phaser.NONE; //resets direction to be turned to to none
+
+            return true;
+        }
     },
 
     moveEnemies: function() {
@@ -258,8 +292,8 @@ var levelState = {
             if (enemy.mobilized && !enemyMoving) {
 
                 enemyMoving = true;
-                var enemyMark = new Phaser.Point();
                 var delay = 1000;
+                enemyTurning = true;
 
                 this.game.time.events.add(delay, function(){ //wait x seconds before trying to move a new direction
 
@@ -267,13 +301,13 @@ var levelState = {
                     enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
                     console.log(enemyMark.x + "," +enemyMark.y);
 
-                    if(map.getTileLeft(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile){ //move if there are safe tiles around
+                    if(enemyDirections['left'].index == safetile){ //move if there are safe tiles around
                         
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'left' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = 0;
-                        enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : enemyVelocity;
+                        enemy.body.velocity.y = direction == 'left' ? 0 : 0; ///remove the else?
+                        enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : 0;
                         enemy.direction = direction;
                         
                         
@@ -283,8 +317,8 @@ var levelState = {
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'right' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = 0;
-                        enemy.body.velocity.x = direction == 'right' ? enemyVelocity : -enemyVelocity;
+                        enemy.body.velocity.y = direction == 'right' ? 0 : 0;
+                        enemy.body.velocity.x = direction == 'right' ? enemyVelocity : 0;
                         enemy.direction = direction;
 
                       }
@@ -292,8 +326,8 @@ var levelState = {
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'up' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = direction == 'up' ? enemyVelocity : -enemyVelocity;
-                        enemy.body.velocity.x = 0;
+                        enemy.body.velocity.y = direction == 'up' ? enemyVelocity : 0;
+                        enemy.body.velocity.x = direction == 'up' ? 0 : 0;
                         enemy.direction = direction;
 
                       }
@@ -302,8 +336,8 @@ var levelState = {
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'down' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = direction == 'down' ? -enemyVelocity : enemyVelocity;
-                        enemy.body.velocity.x = 0;
+                        enemy.body.velocity.y = direction == 'down' ? -enemyVelocity : 0;
+                        enemy.body.velocity.x = direction == 'down' ? 0: 0;
                         enemy.direction = direction;
 
                       }
@@ -419,10 +453,10 @@ var levelState = {
         directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
 
-        directions[1] = map.getTileLeft(wallLayer.index, marker.x, marker.y);
-        directions[2] = map.getTileRight(wallLayer.index, marker.x, marker.y);
-        directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
-        directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
+        enemyDirections[1] = map.getTileLeft(wallLayer.index, enemyMark.x+1, enemyMArk.y+1);
+        enemyDirections[2] = map.getTileRight(wallLayer.index, enemyMark.x+1, enemyMArk.y+1);
+        enemyDirections[3] = map.getTileAbove(wallLayer.index, enemyMark.x+1, enemyMArk.y+1);
+        enemyDirections[4] = map.getTileBelow(wallLayer.index, enemyMark.x+1, enemyMArk.y+1);
     },
 
     collectSnack: function() {
