@@ -505,8 +505,8 @@ var levelState = {
              }
 
             this.wrapAround();
-            this.moveEnemies();
-            enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);});
+            // this.moveEnemies();
+            //enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);});
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             this.updateScore();
