@@ -212,6 +212,7 @@ var levelState = {
 
         enemies.forEachExists(function(enemy){
             this.game.physics.arcade.collide(enemy, wallLayer);
+            //console.log("enemy collision check");
         });
         
     },
