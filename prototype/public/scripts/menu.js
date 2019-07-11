@@ -13,7 +13,6 @@ var menuState = {
     resetGame:function(){
         gameStats.score = 0;
         gameStats.coins = 0;
-
     },
 	
     create: function() {

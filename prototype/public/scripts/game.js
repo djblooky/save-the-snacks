@@ -34,18 +34,18 @@ var tileMark = new Phaser.Point();
 var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
 var current = Phaser.UP;
-var threshold = 3; 
+var threshold = 3;
 var safetile = -1;
 var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];
-var opposites = [ Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP ]; 
+var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
 var enemyDirections = [null, null, null, null, null];
 var enemyMark = new Phaser.Point();
 var enemyMoving = false;
 var enemyTurning = false;
 var x = 0;
-var y = 0; 
+var y = 0;
 
 //timers
 //var snackTimer = new Timer(game, autoDestroy);
@@ -63,24 +63,34 @@ var gameStats = {
     snacksAdded: false,
     swordAdded: false,
     snacks: [ //add snack images to load.js
-                {'levels': [1], 'name': 'cookieCat', 'value': 100}, 
-                {'levels': [2], 'name': 'chaaps', 'value': 300},
-                {'levels': [3,4], 'name': 'bigDonut', 'value': 500},
-                {'levels': [5,6], 'name': 'apple', 'value': 700},
-                {'levels': [7,8], 'name': 'pear', 'value': 1000},
-                {'levels': [9,10,11,12], 'name': 'pineapple', 'value': 2000}
-            ],
-    
+        {
+            'levels': [1],
+            'name': 'cookieCat',
+            'value': 100
+        },
+        {
+            'levels': [1],
+            'name': 'chaaps',
+            'value': 300
+        },
+        {
+            'levels': [1],
+            'name': 'bigDonut',
+            'value': 500
+        }
+        //{'levels': [1], 'name': 'sword', 'value': 700}
+    ],
+
     stevenVelocity: 150,
-    stevenStartingX: 32 + (stevenSize/2),
-    stevenStartingY: 32 + (stevenSize/2),
+    stevenStartingX: 32 + (stevenSize / 2),
+    stevenStartingY: 32 + (stevenSize / 2),
 
     enemyCoinValue: 200,
     multiplier: 2,
 
     crystalShrimpVelocity: 80,
     enemyVelocity: 80,
-    
+
     crystalShrimpMoveDelay: 1000,
 
     invincibilityTime: 5000,
@@ -88,12 +98,12 @@ var gameStats = {
     snackRespawnTime: 500,
 }
 
-function getRandomTile(){
+function getRandomTile() {
     //console.log("getRandomTile call")
     var point = new Phaser.Point();
     var tileIndex;
 
-    do{
+    do {
         var randPoint = new Phaser.Point();
 
         randPoint.x = Math.floor(Math.random() * (384 - 1 + 1)) + 1; //random num 1-12
@@ -106,26 +116,26 @@ function getRandomTile(){
 
         tile = map.getTile(point.x, point.y, wallLayer, true); //wallLayer.index
         tileIndex = tile.index; //get the tile index at those coords
-        
+
         //console.log('tileIndex: ' + tileIndex);
 
-        if(tileIndex === safetile){ //if that tile is a safe tile, save coords to allow snack to spawn
+        if (tileIndex === safetile) { //if that tile is a safe tile, save coords to allow snack to spawn
             tileMark.x = point.x + 1;
             tileMark.y = point.y + 1;
         }
 
-    }while(tileIndex !== safetile); //keep searching for random tile until it is a safe tile
-        
+    } while (tileIndex !== safetile); //keep searching for random tile until it is a safe tile
+
 }
 
-function getSnackX(){
+function getSnackX() {
 
-    return (tileMark.x * 32) - (32/2); //need to convert tile coordinate to normal coordinate
+    return (tileMark.x * 32) - (32 / 2); //need to convert tile coordinate to normal coordinate
 }
 
-function getSnackY(){
+function getSnackY() {
 
-    return (tileMark.y * 32) - (32/2); //tile size/2 to center snack in path
+    return (tileMark.y * 32) - (32 / 2); //tile size/2 to center snack in path
 }
 
 function addSnacks() {
@@ -139,41 +149,47 @@ function addSnacks() {
     }
 }
 
-function addSword(){
+function addSword() {
     //add timer
-    if(!gameStats.swordAdded){ //if theres no sword in game yet, add one
+    if (!gameStats.swordAdded) { //if theres no sword in game yet, add one
         gameStats.swordAdded = true;
-        sword = this.game.add.sprite(190, 305, 'sword'); //add sword to load.js
+        sword = this.game.add.sprite(getSnackX(), getSnackY(), 'sword'); //add sword to load.js
         sword.anchor.setTo(0.5);
         this.game.physics.arcade.enable(sword);
     }
 }
 
-function pauseGame(){
+function pauseGame() {
     //save steven's position
     //save enemies' positions
     //save snacks' positions
 }
 
 function addUI() {
-    scoreDisplay = this.game.add.text(game.world.centerX, 15, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 16 }); //score display at top center
-    
-        //pause button
-	    pause = this.game.add.button(360, 20, 'pause', function() {
-            pauseGame();
-			this.game.state.start('pause');
-		});
-        
-        //exit button
-	    exit = this.game.add.button(25, 20, 'exit', function() {
-			this.game.state.start('menu');
-		});
+    scoreDisplay = this.game.add.text(game.world.centerX, 15, 'Score: ' + gameStats.score, {
+        'fill': 'white',
+        'fontSize': 16
+    }); //score display at top center
 
-    coinsDisplay = this.game.add.text(300, 530, 'Coins: ' + gameStats.coins, { 'fill': 'white', 'fontSize': 16 }); //coins bottom right
+    //pause button
+    pause = this.game.add.button(360, 20, 'pause', function () {
+        pauseGame();
+        this.game.state.start('pause');
+    });
+
+    //exit button
+    exit = this.game.add.button(25, 20, 'exit', function () {
+        this.game.state.start('menu');
+    });
+
+    coinsDisplay = this.game.add.text(300, 530, 'Coins: ' + gameStats.coins, {
+        'fill': 'white',
+        'fontSize': 16
+    }); //coins bottom right
     lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon'); //life icons bottom left
     lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
     lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
-    
+
     [scoreDisplay, coinsDisplay, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
 }
 
@@ -195,9 +211,7 @@ function addLifeIcons() {
 }
 
 function extraLife() {
-	addLifeIcons();
-	gameStats.lives++;
-	gameStats.livesEarned++;
+    addLifeIcons();
+    gameStats.lives++;
+    gameStats.livesEarned++;
 }
-
-

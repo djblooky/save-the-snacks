@@ -16,8 +16,11 @@ var loadState = {
 		
         this.game.load.image('life-icon', 'star.png');
         
+        this.game.load.image('sword', 'sword.png');
+
         //snacks
         this.game.load.image('cookieCat', 'cookie_cat.png')
+        this.game.load.image('chaaps', 'chaaps.png')
 
     },
     
