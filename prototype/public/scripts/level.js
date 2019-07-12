@@ -114,20 +114,60 @@ var levelState = {
         }
     },
 
+    activateSword: function () {
+        gameStats.swordCount--;
+        gameStats.swordActivated = true;
+        console.log("sword activated");
+
+        //timer with sword duration
+            //put enemies in vulnerable mode
+            //"sword activated" text
+
+        if(swordCount <= 0){
+            swordButton.destroy(); //remove sword button
+        }
+    },
+
     createSwordButton() {
-        //button = new button
-        //this.activateSword()
+        
+        swordText = game.add.text(game.world.centerX + 30, game.world.centerY +200, "x" + gameStats.swordCount, { //displays how many swords are remaining (next to button)
+            'fill': 'white',
+            'fontSize': 14
+        });
+
+        if(gameStats.swordCount == 1){//if there's no button already (the first sword added)
+            swordButton = this.game.add.button(game.world.centerX, game.world.centerY +200, 'play', function() {
+			this.activateSword();
+		});
+        }
+      /*  else if(swordCount > 1){
+
+        }
+        else{
+            console.log("sword count is less than 1")
+        }*/
     },
 
     collectSword: function () {
-        //if colliding with sword sprite
-        //this.createSwordButton()
-        //create button on dock that
-    },
+            var gotSword = false;
+        
+            this.game.physics.arcade.overlap(steven, sword, function () {
+                sword.destroy();
+                gameStats.swordCount++;
+                this.createSwordButton()
+                gotSword = true;
+            });
 
-    activateSword: function () {
-        gameStats.swordActivated = true;
-        //put enemies in vulnerable mode
+            if (gotSword) {
+
+                this.game.time.events.add(gameStats.swordSpawnDelay, function () {
+                    gameStats.snacksAdded = false;
+                }); //wait for timer to respawn snack
+
+                getSwordTile();
+                //console.log('snack added is false');
+            }
+        
     },
 
     resetSteven: function () {
@@ -182,8 +222,8 @@ var levelState = {
     },
 
     gameOver: function () {
-        steven.animations.stop();
-        enemies.forEachExists(enemy => enemy.animations.stop());
+        //steven.animations.stop();
+        //enemies.forEachExists(enemy => enemy.animations.stop());
         game.state.start('results');
     },
 
@@ -302,7 +342,7 @@ var levelState = {
                     enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
                     console.log(enemyMark.x + "," + enemyMark.y);
 
-                    if (enemyDirections['left'].index == safetile) { //move if there are safe tiles around
+                    if (map.getTileLeft(wallLayer.index, enemyMark.x +1, enemyMark.y+1).index == safetile) { //enemyDirections['left'].index == safetile
 
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'left' : enemy.direction; //50% chance to turn or keep goin
@@ -312,7 +352,7 @@ var levelState = {
                         enemy.direction = direction;
 
 
-                    } else if (map.getTileRight(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1).index == safetile) {
+                    } else if (map.getTileRight(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile) {
 
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'right' : enemy.direction; //50% chance to turn or keep goin
@@ -321,7 +361,7 @@ var levelState = {
                         enemy.body.velocity.x = direction == 'right' ? enemyVelocity : 0;
                         enemy.direction = direction;
 
-                    } else if (map.getTileAbove(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1).index == safetile) {
+                    } else if (map.getTileAbove(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile) {
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'up' : enemy.direction; //50% chance to turn or keep goin
                         var enemyVelocity = levelState.getEnemyVelocity();
@@ -329,7 +369,7 @@ var levelState = {
                         enemy.body.velocity.x = direction == 'up' ? 0 : 0;
                         enemy.direction = direction;
 
-                    } else if (map.getTileBelow(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1).index == safetile) {
+                    } else if (map.getTileBelow(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile) {
 
                         levelState.decideEnemyMovement(enemy);
                         var direction = Math.random() > 0.5 ? 'down' : enemy.direction; //50% chance to turn or keep goin
@@ -339,10 +379,10 @@ var levelState = {
                         enemy.direction = direction;
 
                     }
-                    /*
+                    
                     else{ //turn on collision if not at paths
                         this.game.physics.arcade.collide(enemy, wallLayer, this.decideEnemyMovement());
-                    }  */
+                    }  
                     enemyMoving = false;
                 });
             }
@@ -441,10 +481,10 @@ var levelState = {
         directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
 
-        enemyDirections[1] = map.getTileLeft(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1);
-        enemyDirections[2] = map.getTileRight(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1);
-        enemyDirections[3] = map.getTileAbove(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1);
-        enemyDirections[4] = map.getTileBelow(wallLayer.index, enemyMark.x + 1, enemyMark.y + 1);
+        enemyDirections[1] = map.getTileLeft(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemyDirections[2] = map.getTileRight(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemyDirections[3] = map.getTileAbove(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemyDirections[4] = map.getTileBelow(wallLayer.index, enemyMark.x, enemyMark.y);
     },
 
     collectSnack: function () {
@@ -498,8 +538,8 @@ var levelState = {
             }
 
             this.wrapAround();
-            //this.moveEnemies();
-            //enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);});
+            this.moveEnemies();
+            enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);}); //update enemy position
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             this.updateScore();

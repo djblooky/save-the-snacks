@@ -13,6 +13,7 @@ var crystalShrimp; //base enemy
 
 var snacks;
 var sword;
+var swordButton;
 
 //UI Elements
 var scoreDisplay;
@@ -29,8 +30,11 @@ var snackScore;
 var stevenX, stevenY; //player coordinates
 var stevenSize = 32; //sprite width and height
 
-//movement
-var tileMark = new Phaser.Point();
+//collectables
+var tileMark = new Phaser.Point(); //snack tile
+var swordTile = new Phaser.Point();
+
+//player movement
 var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
 var current = Phaser.UP;
@@ -40,6 +44,7 @@ var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];
 var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
+//enemy movement
 var enemyDirections = [null, null, null, null, null];
 var enemyMark = new Phaser.Point();
 var enemyMoving = false;
@@ -60,6 +65,8 @@ var gameStats = {
     inPlay: false,
     swordActivated: false,
     swordDuration: 3000,
+    swordSpawnDelay: 1000,
+    swordCount = 0,
     snacksAdded: false,
     swordAdded: false,
     snacks: [ //add snack images to load.js
@@ -128,6 +135,30 @@ function getRandomTile() {
 
 }
 
+function getSwordTile(){
+    var swordPoint = new Phaser.Point();
+    var tileIndex;
+
+    do {
+        var randPoint = new Phaser.Point();
+
+        randPoint.x = Math.floor(Math.random() * (384 - 1 + 1)) + 1; //random num 1-12
+        randPoint.y = Math.floor(Math.random() * (512 - 1 + 1)) + 1; //randomnum 1-16
+
+        swordPoint.x = game.math.snapToFloor(Math.floor(randPoint.x), map.tileWidth) / map.tileWidth;
+        swordPoint.y = game.math.snapToFloor(Math.floor(randPoint.y), map.tileHeight) / map.tileHeight;
+
+        tile = map.getTile(swordPoint.x, swordPoint.y, wallLayer, true); //wallLayer.index
+        tileIndex = tile.index; //get the tile index at those coords
+
+        if (tileIndex === safetile) { //if that tile is a safe tile, save coords to allow snack to spawn
+            swordTile.x = x + 1;
+            swordTile.y = y + 1;
+        }
+
+    } while(tileIndex !== safetile);
+}
+
 function getSnackX() {
 
     return (tileMark.x * 32) - (32 / 2); //need to convert tile coordinate to normal coordinate
@@ -136,6 +167,16 @@ function getSnackX() {
 function getSnackY() {
 
     return (tileMark.y * 32) - (32 / 2); //tile size/2 to center snack in path
+}
+
+function getSwordX() {
+
+    return (swordTile.x * 32) - (32 / 2); //need to convert tile coordinate to normal coordinate
+}
+
+function getSwordY() {
+
+    return (swordTile.y * 32) - (32 / 2); //tile size/2 to center snack in path
 }
 
 function addSnacks() {
@@ -150,13 +191,13 @@ function addSnacks() {
 }
 
 function addSword() {
-    //add timer
-    if (!gameStats.swordAdded) { //if theres no sword in game yet, add one
-        gameStats.swordAdded = true;
-        sword = this.game.add.sprite(getSnackX(), getSnackY(), 'sword'); //add sword to load.js
-        sword.anchor.setTo(0.5);
-        this.game.physics.arcade.enable(sword);
-    }
+    
+        if (!gameStats.swordAdded) { //if theres no sword in game yet, add one
+            gameStats.swordAdded = true;
+            sword = this.game.add.sprite(getSwordX(), getSwordY(), 'sword'); //add sword to load.js
+            sword.anchor.setTo(0.5);
+            this.game.physics.arcade.enable(sword);
+        } 
 }
 
 function pauseGame() {
