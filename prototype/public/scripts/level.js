@@ -117,40 +117,36 @@ var levelState = {
     },
 
     activateSword: function () {
+        
         gameStats.swordCount--;
         gameStats.swordActivated = true;
         console.log("sword activated");
 
-        //timer with sword duration
-            //put enemies in vulnerable mode
-            //"sword activated" text
+        //put enemies in vulnerable mode (state to make their sprites blink)
+
+        this.game.time.events.add(gameStats.swordDuration, function () {
+            gameStats.swordActivated = false;
+            console.log("sword deactivated")
+        });
 
         if(gameStats.swordCount <= 0){
             swordButton.destroy(); //remove sword button
-            swordText.setText(" ");
+            swordText.setText("");
         }
+        else{
+            swordText.setText("x" + gameStats.swordCount);
+        }
+        
     },
 
     createSwordButton: function() {
-        
-        swordText = game.add.text(game.world.centerX + 30, 520, "x" + gameStats.swordCount, { //displays how many swords are remaining (next to button)
-            'fill': 'white',
-            'fontSize': 14
-        });
+
+        swordText.setText("x" + gameStats.swordCount); //displays how many swords are remaining (next to button)
 
         if(gameStats.swordCount == 1){ //if there's no button already (the first sword added)
             swordButton = this.game.add.button(game.world.centerX, 520, 'swordButton', function() {
             levelState.activateSword();
-            
-            swordButton.anchor.setTo(0.5);
-		});
-        }
-      /*  else if(swordCount > 1){
-
-        }
-        else{
-            console.log("sword count is less than 1")
-        }*/
+        });}
     },
 
     collectSword: function () {
@@ -166,7 +162,7 @@ var levelState = {
             if (gotSword) {
 
                 this.game.time.events.add(gameStats.swordSpawnDelay, function () {
-                    gameStats.snacksAdded = false;
+                    gameStats.swordAdded = false;
                 }); //wait for timer to respawn snack
 
                 getSwordTile();
@@ -521,7 +517,7 @@ var levelState = {
 
     updateScore: function () {
         scoreDisplay.setText('Score: ' + gameStats.score);
-        coinsDisplay.setText(gameStats.coins);
+        coinsDisplay.setText(Math.ceil(gameStats.coins));
         //highScoreDisplay.setText('High Score: ' + Math.max(gameStats.score, gameStats.highScore));
         if (gameStats.score >= 10000 && !gameStats.livesEarned) {
             extraLife();

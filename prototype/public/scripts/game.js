@@ -24,6 +24,7 @@ var lifeIcon4;
 //text
 var snackScore;
 var swordText;
+var swordActiveText;
 var scoreDisplay;
 var highScoreDisplay;
 var coinsDisplay;
@@ -67,7 +68,7 @@ var gameStats = {
     inPlay: false,
     swordActivated: false,
     swordDuration: 3000,
-    swordSpawnDelay: 1000,
+    swordSpawnDelay: 10000,
     swordCount: 0,
     snacksAdded: false,
     swordAdded: false,
@@ -230,11 +231,16 @@ function addUI() {
         'fontSize': 20
     }); //coins bottom right
 
+    swordText = game.add.text(game.world.centerX + 40, 535, "", { 
+        'fill': 'white',
+        'fontSize': 14
+    });
+
     lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon'); //life icons bottom left
     lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
     lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
 
-    [scoreDisplay, coinIcon, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
+    [swordText, scoreDisplay, coinIcon, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
 }
 
 function addLifeIcons() {
