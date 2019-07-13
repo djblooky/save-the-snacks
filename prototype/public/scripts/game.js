@@ -13,11 +13,9 @@ var crystalShrimp; //base enemy
 
 var snacks;
 var sword;
-var swordButton;
 
 //UI Elements
-var scoreDisplay;
-var highScoreDisplay;
+var swordButton;
 var lifeIcon1;
 var lifeIcon2;
 var lifeIcon3;
@@ -25,6 +23,10 @@ var lifeIcon4;
 
 //text
 var snackScore;
+var swordText;
+var scoreDisplay;
+var highScoreDisplay;
+var coinsDisplay;
 
 //steven
 var stevenX, stevenY; //player coordinates
@@ -66,7 +68,7 @@ var gameStats = {
     swordActivated: false,
     swordDuration: 3000,
     swordSpawnDelay: 1000,
-    swordCount = 0,
+    swordCount: 0,
     snacksAdded: false,
     swordAdded: false,
     snacks: [ //add snack images to load.js
@@ -92,8 +94,8 @@ var gameStats = {
     stevenStartingX: 32 + (stevenSize / 2),
     stevenStartingY: 32 + (stevenSize / 2),
 
-    enemyCoinValue: 200,
-    multiplier: 2,
+    enemyCoinValue: 2,
+    multiplier: 1.2,
 
     crystalShrimpVelocity: 80,
     enemyVelocity: 80,
@@ -152,8 +154,8 @@ function getSwordTile(){
         tileIndex = tile.index; //get the tile index at those coords
 
         if (tileIndex === safetile) { //if that tile is a safe tile, save coords to allow snack to spawn
-            swordTile.x = x + 1;
-            swordTile.y = y + 1;
+            swordTile.x = swordPoint.x + 1;
+            swordTile.y = swordPoint.y + 1;
         }
 
     } while(tileIndex !== safetile);
@@ -191,13 +193,12 @@ function addSnacks() {
 }
 
 function addSword() {
-    
-        if (!gameStats.swordAdded) { //if theres no sword in game yet, add one
-            gameStats.swordAdded = true;
-            sword = this.game.add.sprite(getSwordX(), getSwordY(), 'sword'); //add sword to load.js
-            sword.anchor.setTo(0.5);
-            this.game.physics.arcade.enable(sword);
-        } 
+    if (!gameStats.swordAdded) { //if theres no sword in game yet, add one
+        gameStats.swordAdded = true;
+        sword = this.game.add.sprite(getSwordX(), getSwordY(), 'sword'); //add sword to load.js
+        sword.anchor.setTo(0.5);
+        this.game.physics.arcade.enable(sword);
+    } 
 }
 
 function pauseGame() {
@@ -223,15 +224,17 @@ function addUI() {
         this.game.state.start('menu');
     });
 
-    coinsDisplay = this.game.add.text(300, 530, 'Coins: ' + gameStats.coins, {
+    coinIcon = this.game.add.image(310, 530, 'coin');
+    coinsDisplay = this.game.add.text(325, 520, gameStats.coins, {
         'fill': 'white',
-        'fontSize': 16
+        'fontSize': 20
     }); //coins bottom right
+
     lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon'); //life icons bottom left
     lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
     lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
 
-    [scoreDisplay, coinsDisplay, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
+    [scoreDisplay, coinIcon, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
 }
 
 function addLifeIcons() {

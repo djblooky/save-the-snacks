@@ -8,6 +8,8 @@ var levelState = {
 
         getRandomTile(); //find tile for snack to spawn
         gameStats.snacksAdded = false; //snack can be added
+        getSwordTile();
+        gameStats.swordAdded = false;
 
         this.moveSteven(Phaser.DOWN);
     },
@@ -123,21 +125,24 @@ var levelState = {
             //put enemies in vulnerable mode
             //"sword activated" text
 
-        if(swordCount <= 0){
+        if(gameStats.swordCount <= 0){
             swordButton.destroy(); //remove sword button
+            swordText.setText(" ");
         }
     },
 
-    createSwordButton() {
+    createSwordButton: function() {
         
-        swordText = game.add.text(game.world.centerX + 30, game.world.centerY +200, "x" + gameStats.swordCount, { //displays how many swords are remaining (next to button)
+        swordText = game.add.text(game.world.centerX + 30, 520, "x" + gameStats.swordCount, { //displays how many swords are remaining (next to button)
             'fill': 'white',
             'fontSize': 14
         });
 
-        if(gameStats.swordCount == 1){//if there's no button already (the first sword added)
-            swordButton = this.game.add.button(game.world.centerX, game.world.centerY +200, 'play', function() {
-			this.activateSword();
+        if(gameStats.swordCount == 1){ //if there's no button already (the first sword added)
+            swordButton = this.game.add.button(game.world.centerX, 520, 'swordButton', function() {
+            levelState.activateSword();
+            
+            swordButton.anchor.setTo(0.5);
 		});
         }
       /*  else if(swordCount > 1){
@@ -154,7 +159,7 @@ var levelState = {
             this.game.physics.arcade.overlap(steven, sword, function () {
                 sword.destroy();
                 gameStats.swordCount++;
-                this.createSwordButton()
+                levelState.createSwordButton();
                 gotSword = true;
             });
 
@@ -234,16 +239,16 @@ var levelState = {
                     //enemy.animations.play('retreat');
                     levelState.resetEnemy(enemy);
 
-                    game.time.events.add(swordDuration, function () {
+                    game.time.events.add(gameStats.swordDuration, function () {
                         levelState.mobilizeEnemies(enemy);
                     });
 
                     gameStats.swordActivated = false;
 
-                    levelState.displayHitScore();
+                   // levelState.displayHitScore();
 
                     gameStats.coins += gameStats.enemyCoinValue;
-                    gameStats.enemyCoinValue *= multiplier;
+                    gameStats.enemyCoinValue *= gameStats.multiplier;
 
                 } else {
                     levelState.loseLife();
@@ -516,6 +521,7 @@ var levelState = {
 
     updateScore: function () {
         scoreDisplay.setText('Score: ' + gameStats.score);
+        coinsDisplay.setText(gameStats.coins);
         //highScoreDisplay.setText('High Score: ' + Math.max(gameStats.score, gameStats.highScore));
         if (gameStats.score >= 10000 && !gameStats.livesEarned) {
             extraLife();
@@ -538,8 +544,8 @@ var levelState = {
             }
 
             this.wrapAround();
-            this.moveEnemies();
-            enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);}); //update enemy position
+           // this.moveEnemies();
+           // enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);}); //update enemy position
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             this.updateScore();
@@ -549,6 +555,7 @@ var levelState = {
         addSword();
         this.hitEnemy();
         this.collectSnack();
+        this.collectSword();
     },
 
 }
