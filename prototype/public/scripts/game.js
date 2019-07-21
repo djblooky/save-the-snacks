@@ -1,4 +1,4 @@
-var buildNumber = 3;
+var buildNumber = 4;
 
 //stage
 var map;

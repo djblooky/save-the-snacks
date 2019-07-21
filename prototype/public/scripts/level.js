@@ -18,7 +18,7 @@ var levelState = {
         this.createStage();
         this.createPlayer();
         this.createEnemies();
-        //this.addAnimations();
+        this.createAnimations();
         //this.animateEnemies();
     },
 
@@ -29,6 +29,9 @@ var levelState = {
                 enemy.body.velocity.y = gameStats.enemyVelocity; //begins moving down
             });
         }
+
+        enemy.direction = 'down';
+        enemy.body.velocity.x = 0;
 
         /*
         else if (enemy == orangeEnemy) {
@@ -49,10 +52,6 @@ var levelState = {
             });
             
         } */
-
-        enemy.direction = 'up';
-        enemy.body.velocity.x = 0;
-
     },
 
     addPhysics: function () {
@@ -84,6 +83,19 @@ var levelState = {
     createPlayer: function () {
         steven = this.game.add.sprite(gameStats.stevenStartingX, gameStats.stevenStartingY, 'steven');
         steven.anchor.setTo(0.5);
+    },
+
+    createAnimations: function() {
+        steven.animations.add('move', [0,1], 3, true);
+        steven.animations.play('move');
+        
+       /* ghosts.forEach(function(ghost) {
+            ghost.animations.add('move', [0,1,2,3,4,5,6,7], 2, true);
+            ghost.animations.add('vulnerable', [8,9], 2, true);
+            ghost.animations.add('warning', [10,11], 2, true);
+            ghost.animations.add('retreat', [12,13], 2, true);
+        });*/
+
     },
 
     createEnemies: function () {
@@ -273,10 +285,8 @@ var levelState = {
 
     decideEnemyMovement: function (enemy) {
 
-
         if (enemy.direction == 'up') { //and up is a possible enemyDirection
             y = 1;
-
         } else if (enemy.direction == 'down') { //and down is a possible enemyDirection
             y = -1;
         } else if (enemy.direction == 'left') { //and left is a possible enemyDirection
@@ -288,13 +298,6 @@ var levelState = {
     },
 
     enemyUpdate: function (enemy) {
-
-        if (enemy.direction == 'up' || enemy.direction == 'down') {
-            enemy.y += y;
-        } else if (enemy.direction == 'left' || enemy.direction == 'right') {
-            enemy.x += x;
-        }
-
         if (enemyTurning) {
             enemyTurning = false;
             var turn = new Phaser.Point();
@@ -322,6 +325,12 @@ var levelState = {
 
             return true;
         }
+
+        if (enemy.direction == 'up' || enemy.direction == 'down') {
+            enemy.y += y;
+        } else if (enemy.direction == 'left' || enemy.direction == 'right') {
+            enemy.x += x;
+        }
     },
 
     moveEnemies: function () {
@@ -332,11 +341,9 @@ var levelState = {
             }
 
             if (enemy.mobilized && !enemyMoving) {
-
                 enemyMoving = true;
                 var delay = 1000;
                 enemyTurning = true;
-
                 this.game.time.events.add(delay, function () { //wait x seconds before trying to move a new direction
 
                     enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
@@ -351,8 +358,6 @@ var levelState = {
                         enemy.body.velocity.y = direction == 'left' ? 0 : 0; ///remove the else?
                         enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : 0;
                         enemy.direction = direction;
-
-
                     } else if (map.getTileRight(wallLayer.index, enemyMark.x+1, enemyMark.y+1).index == safetile) {
 
                         levelState.decideEnemyMovement(enemy);
@@ -378,7 +383,6 @@ var levelState = {
                         enemy.body.velocity.y = direction == 'down' ? -enemyVelocity : 0;
                         enemy.body.velocity.x = direction == 'down' ? 0 : 0;
                         enemy.direction = direction;
-
                     }
                     
                     else{ //turn on collision if not at paths
@@ -540,8 +544,8 @@ var levelState = {
             }
 
             this.wrapAround();
-           // this.moveEnemies();
-           // enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);}); //update enemy position
+            this.moveEnemies();
+            enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);}); //update enemy position
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             this.updateScore();
