@@ -22,16 +22,20 @@ var menuState = {
         var title = this.game.add.image(game.world.centerX, 50, 'title');
         
         //play button
-		var play = this.game.add.button(game.world.centerX - 30, game.world.centerY +200, 'play', function() {
+		var play = this.game.add.button(game.world.centerX, game.world.centerY +200, 'play', function() {
 			this.game.state.start('level');
 		});
         
         //shop button
-		var shop = this.game.add.button(game.world.centerX + 50, game.world.centerY +200, 'shop', function() {
+		var shop = this.game.add.button(game.world.centerX - 100, game.world.centerY +200, 'shop', function() {
 			this.game.state.start('shop');
+        });
+        
+        var settings = this.game.add.button(game.world.centerX + 100, game.world.centerY +200, 'pause', function() {
+			this.game.state.start('pause');
 		});
         
-        [title, play, shop].forEach(o => o.anchor.setTo(0.5));
+        [title, play, shop, settings].forEach(o => o.anchor.setTo(0.5));
     }
     
 }

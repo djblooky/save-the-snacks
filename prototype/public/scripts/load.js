@@ -8,7 +8,7 @@ var loadState = {
         this.game.load.image('terrain', 'terrain.png');
         this.game.load.image('menubackground', 'sky.png'); 
         
-        this.game.load.image('pause', 'pause_button.png');
+        this.game.load.image('pause', 'settings_button.png');
         this.game.load.image('exit', 'back_button.png');
         this.game.load.image('swordButton', 'sword_button.png');
         

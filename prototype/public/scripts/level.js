@@ -305,7 +305,7 @@ var levelState = {
             turn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); //check
 
             //turn logic for enemy
-            var ex = Math.floor(enemy.x); //get steven's x/y coords
+            var ex = Math.floor(enemy.x); //get enemy's x/y coords
             var ey = Math.floor(enemy.y);
 
             //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
