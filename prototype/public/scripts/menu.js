@@ -7,7 +7,8 @@ var menuState = {
     },
     
 	addBackground: function() {
-		this.game.add.image(0, 0, 'menubackground');
+        var bg = this.game.add.image(0, 0, 'menubackground');
+        //bg.scale.setTo(scaleRatio, scaleRatio);
     },
     
     resetGame:function(){
@@ -19,7 +20,8 @@ var menuState = {
         this.resetGame();
 		this.addBackground();
 		
-        var title = this.game.add.image(game.world.centerX, 50, 'title');
+        var title = this.game.add.image(game.world.centerX, 100, 'title');
+        title.scale.setTo(0.3,0.3);
         
         //play button
 		var play = this.game.add.button(game.world.centerX, game.world.centerY +200, 'play', function() {
@@ -35,7 +37,9 @@ var menuState = {
 			this.game.state.start('pause');
 		});
         
+        //[title, play, shop, settings].forEach(o => o.scale.setTo(scaleRatio, scaleRatio));
         [title, play, shop, settings].forEach(o => o.anchor.setTo(0.5));
+        
     }
     
 }

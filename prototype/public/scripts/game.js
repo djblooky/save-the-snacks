@@ -1,4 +1,5 @@
 var buildNumber = 4;
+var scaleRatio = window.devicePixelRatio / 3;
 
 //stage
 var map;
@@ -50,8 +51,10 @@ var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP]
 //enemy movement
 var enemyDirections = [null, null, null, null, null];
 var enemyMark = new Phaser.Point();
+var enemyTurn = new Phaser.Point();
 var enemyMoving = false;
 var enemyTurning = false;
+var enemyTurnDirection = Phaser.NONE;
 var x = 0;
 var y = 0;
 
