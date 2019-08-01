@@ -54,7 +54,7 @@ var enemyMark = new Phaser.Point();
 var enemyTurn = new Phaser.Point();
 var enemyMoving = false;
 var enemyTurning = false;
-var enemyTurnDirection = Phaser.NONE;
+var enemyTurnDirection = Phaser.DOWN;
 var x = 0;
 var y = 0;
 

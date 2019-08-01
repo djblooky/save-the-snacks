@@ -13,6 +13,8 @@ var levelState = {
         gameStats.swordAdded = false;
 
         this.moveSteven(Phaser.DOWN);
+        enemies.forEachExists(enemy => this.moveEnemy(enemy));
+        
     },
 
     scaleAssets: function(){
@@ -291,108 +293,9 @@ var levelState = {
         return enemy == crystalShrimp ? gameStats.crystalShrimpVelocity : gameStats.enemyVelocity;
     },
 
-    enemyUpdate: function (enemy) {
-        if (enemyTurning) {
-            enemyTurning = false;
-            var turn = new Phaser.Point();
-            turn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //check
-            turn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); //check
-
-            //turn logic for enemy
-            var ex = Math.floor(enemy.x); //get enemy's x/y coords
-            var ey = Math.floor(enemy.y);
-
-            //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
-            if (!this.math.fuzzyEqual(ex, turn.x, threshold) || !this.math.fuzzyEqual(ey, turn.y, threshold)) {
-                return false;
-            }
-
-            enemy.x = turn.x;
-            enemy.y = turn.y;
-            enemy.body.reset(turn.x, turn.y);
-
-            //this.moveSteven(enemyTurning);
-
-            //console.log("turned " + willTurn)
-
-            //willTurn = Phaser.NONE; //resets direction to be turned to to none
-
-            return true;
-        }
-        /*
-        if (enemy.direction == 'up' || enemy.direction == 'down') {
-            enemy.y += y;
-        } else if (enemy.direction == 'left' || enemy.direction == 'right') {
-            enemy.x += x;
-        }*/
-    },
-
-    moveEnemies: function () {
-        enemies.forEachExists(function (enemy) {
-
-            if (enemy.y >= 55) {
-                enemy.mobilized = true;
-            }
-
-            if (!enemyMoving) { //enemy.mobilized && 
-                enemyMoving = true;
-                //var delay = 1000;
-                
-                //this.game.time.events.add(delay, function () { //wait x seconds before trying to move a new direction
-
-                    enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
-                    enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
-                    console.log(enemyMark.x + "," + enemyMark.y);
-
-                    if (enemyDirections[1].index === safetile) { //left
-                        enemyTurning = true;
-                        levelState.enemyUpdate(enemy); //update turn coordinates
-                        var direction = Math.random() > 0.5 ? 'left' : enemy.direction; //50% chance to turn or keep goin
-                        var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = direction == 'left' ? 0 : enemyVelocity; ///remove the else?
-                        enemy.body.velocity.x = direction == 'left' ? -enemyVelocity : enemyVelocity;
-                        enemy.direction = direction;
-                    } else if (enemyDirections[2].index === safetile) { //get tile right
-                        enemyTurning = true;
-                        levelState.enemyUpdate(enemy);
-                        var direction = Math.random() > 0.5 ? 'right' : enemy.direction; //50% chance to turn or keep goin
-                        var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = direction == 'right' ? 0 : 0;
-                        enemy.body.velocity.x = direction == 'right' ? enemyVelocity : 0;
-                        enemy.direction = direction;
-
-                    } else if (enemyDirections[3].index === safetile) { //above
-                        enemyTurning = true;
-                        levelState.enemyUpdate(enemy);
-                        var direction = Math.random() > 0.5 ? 'up' : enemy.direction; //50% chance to turn or keep goin
-                        var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = direction == 'up' ? enemyVelocity : 0;
-                        enemy.body.velocity.x = direction == 'up' ? 0 : 0;
-                        enemy.direction = direction;
-
-                    } else if (enemyDirections[4].index === safetile) { //below
-                        enemyTurning = true;
-                        levelState.enemyUpdate(enemy);
-                        var direction = Math.random() > 0.5 ? 'down' : enemy.direction; //50% chance to turn or keep goin
-                        var enemyVelocity = levelState.getEnemyVelocity();
-                        enemy.body.velocity.y = direction == 'down' ? -enemyVelocity : 0;
-                        enemy.body.velocity.x = direction == 'down' ? 0 : 0;
-                        enemy.direction = direction;
-                    }
-                    
-                    else{ //turn on collision if not at paths
-                        this.game.physics.arcade.collide(enemy, wallLayer);//, this.moveEnemies());
-                    }  
-                    enemyMoving = false;
-               // });
-            }
-        });
-    },
-
     turnEnemies: function(){ //turn enemies on update
-        //for each enemy
-
-        if(this.enemyCanTurn(enemy)){ 
+        enemies.forEachExists(function(enemy){
+            if(levelState.enemyCanTurn(enemy)){ 
 
                 var turn = new Phaser.Point();
                 turn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //check
@@ -403,7 +306,7 @@ var levelState = {
                 var ey = Math.floor(enemy.y);
     
                 //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
-                if (!this.math.fuzzyEqual(ex, turn.x, threshold) || !this.math.fuzzyEqual(ey, turn.y, threshold)) {
+                if (!game.math.fuzzyEqual(ex, turn.x, threshold) || !game.math.fuzzyEqual(ey, turn.y, threshold)) {
                     return false;
                 }
     
@@ -411,17 +314,15 @@ var levelState = {
                 enemy.y = turn.y;
                 enemy.body.reset(turn.x, turn.y);
     
-                this.moveEnemy(enemy);
+                levelState.moveEnemy(enemy);
     
                 //console.log("turned " + willTurn)
     
                 enemyTurnDirection = Phaser.NONE //resets direction to be turned to to none
     
-                return true;
-            
+                return true;  
         }
-
-        
+        }); 
     },
 
     coinFlip: function(){
@@ -437,7 +338,7 @@ var levelState = {
                     enemyTurnDirection = 1; //left
                     return true;
                 }}
-            else if(enemyDirection[2].index === safetile){//else if right is safe
+            else if(enemyDirections[2].index === safetile){//else if right is safe
                 if(this.coinFlip()){
                     enemyTurnDirection = 2; //right
                     return true;
@@ -450,7 +351,7 @@ var levelState = {
                     enemyTurnDirection = 3; //up
                     return true;
                 }}
-            else if(enemyDirection[4].index === safetile){//else if down is safe
+            else if(enemyDirections[4].index === safetile){//else if down is safe
                 if(this.coinFlip()){
                     enemyTurnDirection = 4; //down
                     return true;
@@ -484,7 +385,6 @@ var levelState = {
 
         //console.log("moving " + direction);
 
-        //steven.direction = direction;
         enemy.direction = enemyTurnDirection;
 
         switch (enemyTurnDirection) {
@@ -661,9 +561,11 @@ var levelState = {
                 this.turnSteven();
             }
 
+           // if (enemyTurnDirection !== Phaser.NONE){
+                this.turnEnemies();
+            //}
+
             this.wrapAround();
-            this.moveEnemies();
-            //enemies.forEachExists(function(enemy) {levelState.enemyUpdate(enemy);}); //update enemy position
             this.hitWall();
             //console.log(stevenX + ", " + stevenY);
             this.updateScore();
