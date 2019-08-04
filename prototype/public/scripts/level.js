@@ -136,6 +136,15 @@ var levelState = {
         if (steven.left <= 0 && current === 1) {
             steven.left = game.world.right;
         }
+
+        enemies.forEachExists(function(enemy){
+            if (enemy.right >= game.world.right && enemy.direction === 2) {
+                enemy.right = 0;
+            }
+            if (enemy.left <= 0 && enemy.direction === 1) {
+                enemy.left = game.world.right;
+            }
+        });
     },
 
     activateSword: function () {
@@ -295,30 +304,35 @@ var levelState = {
 
     turnEnemies: function(){ //turn enemies on update
         enemies.forEachExists(function(enemy){
-            if(levelState.enemyCanTurn(enemy)){ 
 
-                var turn = new Phaser.Point();
-                turn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //check
-                turn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); //check
+            enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
+            enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
+
+            if(levelState.enemyCanTurn(enemy)){  
+                
+                enemyTurn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
+                enemyTurn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); 
     
                 //turn logic for enemy
                 var ex = Math.floor(enemy.x); //get enemy's x/y coords
                 var ey = Math.floor(enemy.y);
     
                 //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
-                if (!game.math.fuzzyEqual(ex, turn.x, threshold) || !game.math.fuzzyEqual(ey, turn.y, threshold)) {
+                if (!game.math.fuzzyEqual(ex, enemyTurn.x, threshold) || !game.math.fuzzyEqual(ey, enemyTurn.y, threshold)) { 
+                    console.log('enemy too fast to turn');
+                   // enemyTurnDirection = Phaser.NONE;
                     return false;
                 }
     
-                enemy.x = turn.x;
-                enemy.y = turn.y;
-                enemy.body.reset(turn.x, turn.y);
+                enemy.x = enemyTurn.x;
+                enemy.y = enemyTurn.y;
+                enemy.body.reset(enemyTurn.x, enemyTurn.y);
     
                 levelState.moveEnemy(enemy);
     
-                //console.log("turned " + willTurn)
+                console.log("enemy turned " + enemyTurnDirection);
     
-                enemyTurnDirection = Phaser.NONE //resets direction to be turned to to none
+                enemyTurnDirection = Phaser.NONE; //resets direction to be turned to to none
     
                 return true;  
         }
@@ -345,7 +359,7 @@ var levelState = {
                 }}
         }
             
-        if(enemy.direction == 'left' || enemy.direction == 'right'){ //if enemy is moving left or right
+        else if(enemy.direction == 'left' || enemy.direction == 'right'){ //if enemy is moving left or right
             if(enemyDirections[3].index === safetile){ //if up is safe
                 if(this.coinFlip()){
                     enemyTurnDirection = 3; //up
@@ -357,9 +371,6 @@ var levelState = {
                     return true;
                 }}
         }
-
-        enemyTurn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
-        enemyTurn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); 
 
         return false;
 
@@ -561,9 +572,9 @@ var levelState = {
                 this.turnSteven();
             }
 
-           // if (enemyTurnDirection !== Phaser.NONE){
+            if (enemyTurnDirection !== Phaser.NONE){
                 this.turnEnemies();
-            //}
+            }
 
             this.wrapAround();
             this.hitWall();
