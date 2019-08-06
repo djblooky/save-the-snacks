@@ -114,7 +114,8 @@ gameStats = {
     warningTime: 3000,
     snackRespawnTime: 500,
 
-    swordCost: 100
+    swordCost: 100,
+    swordUpgradeValue: 2000,
 }
 }
 
