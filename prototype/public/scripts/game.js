@@ -41,6 +41,7 @@ var swordTile = new Phaser.Point();
 //player movement
 var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
+var turnSpeed = 150;
 var current = Phaser.UP;
 var threshold = 3;
 var safetile = -1;
@@ -61,10 +62,13 @@ var y = 0;
 //timers
 //var snackTimer = new Timer(game, autoDestroy);
 
-var gameStats = {
+var gameStats;
+
+function setGameStats(){
+gameStats = {
     score: 0,
     coins: 0,
-    highScore: localStorage['stevenHighScore'] || 0,
+    //highScore: localStorage['stevenHighScore'] || 0,
     level: 1,
     lives: 3,
     livesEarned: 0,
@@ -109,6 +113,9 @@ var gameStats = {
     invincibilityTime: 5000,
     warningTime: 3000,
     snackRespawnTime: 500,
+
+    swordCost: 100
+}
 }
 
 function getRandomTile() {

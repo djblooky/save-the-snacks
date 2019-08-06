@@ -122,11 +122,17 @@ var levelState = {
     },
 
     updateStevenPosition: function () {
-        stevenX = Math.round(steven.x / map.tileWidth);
+        stevenX = Math.round(steven.x / map.tileWidth);//remove?
         stevenY = Math.round(steven.y / map.tileHeight);
 
         marker.x = this.math.snapToFloor(Math.floor(steven.x), map.tileWidth) / map.tileWidth;
         marker.y = this.math.snapToFloor(Math.floor(steven.y), map.tileHeight) / map.tileHeight;
+
+        enemies.forEachExists(function(enemy){
+            enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
+            enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
+        });
+            
     },
 
     wrapAround: function () {
@@ -305,9 +311,6 @@ var levelState = {
     turnEnemies: function(){ //turn enemies on update
         enemies.forEachExists(function(enemy){
 
-            enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
-            enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
-
             if(levelState.enemyCanTurn(enemy)){  
                 
                 enemyTurn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
@@ -340,11 +343,18 @@ var levelState = {
     },
 
     coinFlip: function(){
-        var flip = Math.random() > 0.5 ? true : false;
-        return flip;
+        return Math.random() > 0.5 ? true : false;
     },
 
     enemyCanTurn: function(enemy){ //check if there's an available perpendicular turn path, then set the turn direction
+        //Remove coin flip inside of each directional check and don't return immediately
+        
+       // var possibleDirections = [];
+
+        //add possible directions to this array where you currently set enemyTurnDirections
+
+       // var selectedDirection = Math.floor((Math.random() * possibleDirection.length)); //0-3
+      //  enemyTurnDirection = possibleDirections[selectedDirection];
 
         if(enemy.direction == 'up' || enemy.direction == 'down'){ //if enemy is moving up or down
             if(enemyDirections[1].index === safetile){ //if left is safe
@@ -352,7 +362,7 @@ var levelState = {
                     enemyTurnDirection = 1; //left
                     return true;
                 }}
-            else if(enemyDirections[2].index === safetile){//else if right is safe
+            if(enemyDirections[2].index === safetile){//else if right is safe
                 if(this.coinFlip()){
                     enemyTurnDirection = 2; //right
                     return true;
@@ -365,7 +375,7 @@ var levelState = {
                     enemyTurnDirection = 3; //up
                     return true;
                 }}
-            else if(enemyDirections[4].index === safetile){//else if down is safe
+            if(enemyDirections[4].index === safetile){//else if down is safe
                 if(this.coinFlip()){
                     enemyTurnDirection = 4; //down
                     return true;
@@ -477,6 +487,23 @@ var levelState = {
         return true;
     },
 
+     getAngle: function (to) {
+            //  About-face?
+            if (current === opposites[to])
+            {
+                return "180";
+                //steven.setScale(-1);
+            }
+            if ((current === Phaser.UP && to === Phaser.LEFT) ||
+                (current === Phaser.DOWN && to === Phaser.RIGHT) ||
+                (current === Phaser.LEFT && to === Phaser.DOWN) ||
+                (current === Phaser.RIGHT && to === Phaser.UP))
+            {
+                return "-90";
+            }
+            return "90";
+        },
+
     moveSteven: function (direction) {
 
         //console.log("moving " + direction);
@@ -504,7 +531,7 @@ var levelState = {
         }
 
         //rotation
-        //this.add.tween(steven).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
+        this.add.tween(steven).to( { angle: this.getAngle(direction) }, turnSpeed, "Linear", true);
         current = direction;
 
     },
@@ -515,10 +542,10 @@ var levelState = {
         directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
 
-        enemyDirections[1] = map.getTileLeft(wallLayer.index, enemyMark.x+1, enemyMark.y+1);
-        enemyDirections[2] = map.getTileRight(wallLayer.index, enemyMark.x+1, enemyMark.y+1);
-        enemyDirections[3] = map.getTileAbove(wallLayer.index, enemyMark.x+1, enemyMark.y+1);
-        enemyDirections[4] = map.getTileBelow(wallLayer.index, enemyMark.x+1, enemyMark.y+1);
+        enemyDirections[1] = map.getTileLeft(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemyDirections[2] = map.getTileRight(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemyDirections[3] = map.getTileAbove(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemyDirections[4] = map.getTileBelow(wallLayer.index, enemyMark.x, enemyMark.y);
     },
 
     collectSnack: function () {

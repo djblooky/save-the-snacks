@@ -14,7 +14,7 @@ var loadState = {
         
         //this.game.load.atlasJSONHash('steven', 'steven_move.png', 'steven_move.json');
         this.game.load.spritesheet('steven', 'steven_move.png', stevenSize, stevenSize);
-        this.game.load.spritesheet('shrimp', 'shrimp.png', 30,30);
+        this.game.load.spritesheet('shrimp', 'shrimp.png', 32,32);
 		
         this.game.load.image('life-icon', 'star.png');
         this.game.load.image('coin', 'coin.png');
