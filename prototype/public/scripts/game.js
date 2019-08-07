@@ -53,11 +53,11 @@ var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP]
 var enemyDirections = [null, null, null, null, null];
 var enemyMark = new Phaser.Point();
 var enemyTurn = new Phaser.Point();
+var enemyIsTurning = false;
 var enemyMoving = false;
 var enemyTurning = false;
 var enemyTurnDirection = Phaser.DOWN;
-var x = 0;
-var y = 0;
+var eWrap = false;
 
 //timers
 //var snackTimer = new Timer(game, autoDestroy);

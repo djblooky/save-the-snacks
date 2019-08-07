@@ -13,7 +13,7 @@ var levelState = {
         gameStats.swordAdded = false;
 
         this.moveSteven(Phaser.DOWN);
-        enemies.forEachExists(enemy => this.moveEnemy(enemy));
+        //enemies.forEachExists(enemy => this.moveEnemy(enemy));
         
     },
 
@@ -141,16 +141,20 @@ var levelState = {
         }
         if (steven.left <= 0 && current === 1) {
             steven.left = game.world.right;
-        }
+        }    
+    },
 
-        enemies.forEachExists(function(enemy){
-            if (enemy.right >= game.world.right && enemy.direction === 2) {
-                enemy.right = 0;
-            }
-            if (enemy.left <= 0 && enemy.direction === 1) {
-                enemy.left = game.world.right;
-            }
-        });
+    enemyWrap: function(enemy){
+        
+        eWrap = false;
+        if (enemy.right >= game.world.right && enemy.direction === 2) {
+            enemy.right = 0;
+            eWrap = true;
+        }
+        if (enemy.left <= 0 && enemy.direction === 1) {
+            enemy.left = game.world.right;
+            eWrap = true;
+        }
     },
 
     activateSword: function () {
@@ -308,13 +312,10 @@ var levelState = {
         return enemy == crystalShrimp ? gameStats.crystalShrimpVelocity : gameStats.enemyVelocity;
     },
 
-    turnEnemies: function(){ //turn enemies on update
-        enemies.forEachExists(function(enemy){
+    turnEnemy: function(enemy){ //turn enemies on update
+        //enemies.forEachExists(function(enemy){
 
-            if(levelState.enemyCanTurn(enemy)){  
-                
-                enemyTurn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
-                enemyTurn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); 
+           // if(levelState.enemyCanTurn(enemy)){  
     
                 //turn logic for enemy
                 var ex = Math.floor(enemy.x); //get enemy's x/y coords
@@ -338,68 +339,59 @@ var levelState = {
                 enemyTurnDirection = Phaser.NONE; //resets direction to be turned to to none
     
                 return true;  
-        }
-        }); 
+        //}
+        //}); 
     },
 
     coinFlip: function(){
         return Math.random() > 0.5 ? true : false;
     },
 
-    enemyCanTurn: function(enemy){ //check if there's an available perpendicular turn path, then set the turn direction
-        //Remove coin flip inside of each directional check and don't return immediately
-        
-       // var possibleDirections = [];
+    checkForEnemyTurn: function(enemy){ //check if there's an available perpendicular turn path, then set the turn direction
 
-        //add possible directions to this array where you currently set enemyTurnDirections
-
-       // var selectedDirection = Math.floor((Math.random() * possibleDirection.length)); //0-3
-      //  enemyTurnDirection = possibleDirections[selectedDirection];
-
-        if(enemy.direction == 'up' || enemy.direction == 'down'){ //if enemy is moving up or down
-            if(enemyDirections[1].index === safetile){ //if left is safe
-                if(this.coinFlip()){
-                    enemyTurnDirection = 1; //left
-                    return true;
-                }}
-            if(enemyDirections[2].index === safetile){//else if right is safe
-                if(this.coinFlip()){
-                    enemyTurnDirection = 2; //right
-                    return true;
-                }}
-        }
-            
-        else if(enemy.direction == 'left' || enemy.direction == 'right'){ //if enemy is moving left or right
-            if(enemyDirections[3].index === safetile){ //if up is safe
-                if(this.coinFlip()){
-                    enemyTurnDirection = 3; //up
-                    return true;
-                }}
-            if(enemyDirections[4].index === safetile){//else if down is safe
-                if(this.coinFlip()){
-                    enemyTurnDirection = 4; //down
-                    return true;
-                }}
-        }
-
-        return false;
-
-/* steven's check for turn
-        if (willTurn === turnDirection || directions[turnDirection] === null || directions[turnDirection].index !== safetile) {
-            //  Invalid direction if they're already set to turn that way
-            //  Or there is no tile there, or the tile isn't index a floor tile
+        if(enemyDirections[1] === null || enemyDirections[2] === null){ //going to wrap
             return;
         }
 
-        if (current === opposites[turnDirection]) //check for turn around
-        {
-            this.moveSteven(turnDirection);
-        } else //if turning, set turn direction and turn points
-        {
-            willTurn = turnDirection;
-            turnPoint.x = (marker.x * map.tileWidth) + (map.tileWidth / 2); //check
-            turnPoint.y = (marker.y * map.tileHeight) + (map.tileHeight / 2); //check
-        }*/ 
+        var possibleDirections = [];
+
+        //if(enemy.direction == "down" || enemy.direction == "up" || enemy.direction == 3 || enemy.direction == 4){ //if enemy is moving up or down
+            if(enemyDirections[1].index === safetile){ //if left is safe
+                possibleDirections.push(1); //add left as a possible dir
+            }
+            if(enemyDirections[2].index === safetile){//else if right is safe
+                possibleDirections.push(2);
+            }
+        //}
+            
+        //else if(enemy.direction == "left" || enemy.direction == "right" || enemy.direction == 1 || enemy.direction == 2){ //if enemy is moving left or right
+            if(enemyDirections[3].index === safetile){ //if up is safe
+                possibleDirections.push(3);
+            }
+            if(enemyDirections[4].index === safetile){//else if down is safe
+                possibleDirections.push(4);
+            }
+       // }
+
+        if(possibleDirections.length > 0){ //if there's at least one possible direction
+           
+            var selectedDirection;
+            var direction;
+        
+            do{
+                selectedDirection = Math.floor(Math.random() * possibleDirections.length); //0-3
+                direction = possibleDirections[selectedDirection];
+            }
+            while(direction !== opposites[enemy.direction] && direction !== enemy.direction); //cant turn around or turn to current dir
+                     
+            enemyTurnDirection = direction;
+            enemyTurn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
+            enemyTurn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); 
+            return true;
+        }
+        else{
+            return false;
+        }
     },
 
     moveEnemy: function (enemy) {
@@ -429,7 +421,7 @@ var levelState = {
 
         //rotation
         //this.add.tween(steven).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
-        //current = direction;
+        enemy.direction = enemyTurnDirection;
 
     },
 
@@ -584,28 +576,51 @@ var levelState = {
         }
     },
 
+    moveEnemies: function(){
+        enemies.forEachExists(function(enemy){
+            levelState.enemyWrap(enemy);
+
+            if(!enemyIsTurning){
+                
+                if(!eWrap){
+                enemyIsTurning = true; 
+                this.game.time.events.add(100, function () { 
+                    
+                        levelState.checkForEnemyTurn(enemy);
+            
+                         if (enemyTurnDirection !== Phaser.NONE){
+                            levelState.turnEnemy(enemy);            
+                         }  
+                         enemyIsTurning = false; 
+                });
+            }
+            } 
+        });
+    },
+
+    movePlayer: function(){
+        if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown) {
+            this.checkForTurn(this.getMoveKey()); //only move while move keys are pressed
+        }
+
+        if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
+        {
+            this.turnSteven();
+        }
+    },
+
     update: function () {
         if (gameStats.inPlay) {
 
             this.updateStevenPosition();
             this.updateGridSensors();
 
-            if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown) {
-                this.checkForTurn(this.getMoveKey()); //only move while move keys are pressed
-            }
-
-            if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
-            {
-                this.turnSteven();
-            }
-
-            if (enemyTurnDirection !== Phaser.NONE){
-                this.turnEnemies();
-            }
+            this.movePlayer();
+            this.moveEnemies();
 
             this.wrapAround();
             this.hitWall();
-            //console.log(stevenX + ", " + stevenY);
+            
             this.updateScore();
         }
 
