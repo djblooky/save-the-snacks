@@ -50,14 +50,13 @@ var directions = [null, null, null, null, null];
 var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
 //enemy movement
-var enemyDirections = [null, null, null, null, null];
-var enemyMark = new Phaser.Point();
-var enemyTurn = new Phaser.Point();
-var enemyIsTurning = false;
-var enemyMoving = false;
-var enemyTurning = false;
-var enemyTurnDirection = Phaser.DOWN;
-var eWrap = false;
+//var enemyDirections = [null, null, null, null, null];
+//var enemyMark = new Phaser.Point();
+//var enemyTurn = new Phaser.Point();
+//var enemyIsTurning = false;
+//var enemyTurnDirection = Phaser.DOWN;
+//var eWrap = false;
+enemyTurnDelay = 100;
 
 //timers
 //var snackTimer = new Timer(game, autoDestroy);
@@ -163,6 +162,9 @@ function getSwordTile(){
         swordPoint.y = game.math.snapToFloor(Math.floor(randPoint.y), map.tileHeight) / map.tileHeight;
 
         tile = map.getTile(swordPoint.x, swordPoint.y, wallLayer, true); //wallLayer.index
+        if(tile === null){
+            return;
+        }
         tileIndex = tile.index; //get the tile index at those coords
 
         if (tileIndex === safetile) { //if that tile is a safe tile, save coords to allow snack to spawn

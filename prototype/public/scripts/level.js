@@ -118,7 +118,15 @@ var levelState = {
         enemies.setAll('anchor.y', 0.5);
         enemies.setAll('frame', 0);
 
-        enemies.forEachExists(enemy => enemy.mobilized = false);
+        enemies.forEachExists(function(enemy){ //add to reset enemy
+            enemy.mobilized = false;
+            enemy.isTurning = false;
+            enemy.wrap = false;
+            enemy.mark = new Phaser.Point();
+            enemy.turnPoint = new Phaser.Point();
+            enemy.turnDirection = Phaser.NONE;
+            enemy.directions = [null, null, null, null, null];
+        });
     },
 
     updateStevenPosition: function () {
@@ -129,8 +137,8 @@ var levelState = {
         marker.y = this.math.snapToFloor(Math.floor(steven.y), map.tileHeight) / map.tileHeight;
 
         enemies.forEachExists(function(enemy){
-            enemyMark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
-            enemyMark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
+            enemy.mark.x = game.math.snapToFloor(Math.floor(enemy.x), map.tileWidth) / map.tileWidth;
+            enemy.mark.y = game.math.snapToFloor(Math.floor(enemy.y), map.tileHeight) / map.tileHeight;
         });
             
     },
@@ -146,14 +154,14 @@ var levelState = {
 
     enemyWrap: function(enemy){
         
-        eWrap = false;
+        enemy.wrap = false;
         if (enemy.right >= game.world.right && enemy.direction === 2) {
             enemy.right = 0;
-            eWrap = true;
+            enemy.wrap = true;
         }
         if (enemy.left <= 0 && enemy.direction === 1) {
             enemy.left = game.world.right;
-            eWrap = true;
+            enemy.wrap = true;
         }
     },
 
@@ -322,21 +330,21 @@ var levelState = {
                 var ey = Math.floor(enemy.y);
     
                 //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
-                if (!game.math.fuzzyEqual(ex, enemyTurn.x, threshold) || !game.math.fuzzyEqual(ey, enemyTurn.y, threshold)) { 
+                if (!game.math.fuzzyEqual(ex, enemy.turnPoint.x, threshold) || !game.math.fuzzyEqual(ey, enemy.turnPoint.y, threshold)) { 
                     console.log('enemy too fast to turn');
-                   // enemyTurnDirection = Phaser.NONE;
+                   // enemy.turnDirection = Phaser.NONE;
                     return false;
                 }
     
-                enemy.x = enemyTurn.x;
-                enemy.y = enemyTurn.y;
-                enemy.body.reset(enemyTurn.x, enemyTurn.y);
+                enemy.x = enemy.turnPoint.x;
+                enemy.y = enemy.turnPoint.y;
+                enemy.body.reset(enemy.turnPoint.x, enemy.turnPoint.y);
     
                 levelState.moveEnemy(enemy);
     
-                console.log("enemy turned " + enemyTurnDirection);
+                console.log("enemy turned " + enemy.turnDirection);
     
-                enemyTurnDirection = Phaser.NONE; //resets direction to be turned to to none
+                enemy.turnDirection = Phaser.NONE; //resets direction to be turned to to none
     
                 return true;  
         //}
@@ -349,44 +357,48 @@ var levelState = {
 
     checkForEnemyTurn: function(enemy){ //check if there's an available perpendicular turn path, then set the turn direction
 
-        if(enemyDirections[1] === null || enemyDirections[2] === null){ //going to wrap
+        if(enemy.directions[1] === null || enemy.directions[2] === null){ //going to wrap
             return;
         }
 
         var possibleDirections = [];
 
-        //if(enemy.direction == "down" || enemy.direction == "up" || enemy.direction == 3 || enemy.direction == 4){ //if enemy is moving up or down
-            if(enemyDirections[1].index === safetile){ //if left is safe
+        if(enemy.direction == "down" || enemy.direction == "up" || enemy.direction == 3 || enemy.direction == 4){ //if enemy is moving up or down
+            console.log("enemy up/down" + enemy.direction);
+            if(enemy.directions[1].index === safetile){ //if left is safe
                 possibleDirections.push(1); //add left as a possible dir
             }
-            if(enemyDirections[2].index === safetile){//else if right is safe
+            if(enemy.directions[2].index === safetile){//else if right is safe
                 possibleDirections.push(2);
             }
-        //}
+        }
             
-        //else if(enemy.direction == "left" || enemy.direction == "right" || enemy.direction == 1 || enemy.direction == 2){ //if enemy is moving left or right
-            if(enemyDirections[3].index === safetile){ //if up is safe
+        else if(enemy.direction == "left" || enemy.direction == "right" || enemy.direction == 1 || enemy.direction == 2){ //if enemy is moving left or right
+            if(enemy.directions[3].index === safetile){ //if up is safe
                 possibleDirections.push(3);
             }
-            if(enemyDirections[4].index === safetile){//else if down is safe
+            if(enemy.directions[4].index === safetile){//else if down is safe
                 possibleDirections.push(4);
             }
-       // }
+        }
 
         if(possibleDirections.length > 0){ //if there's at least one possible direction
            
             var selectedDirection;
             var direction;
-        
-            do{
-                selectedDirection = Math.floor(Math.random() * possibleDirections.length); //0-3
-                direction = possibleDirections[selectedDirection];
-            }
-            while(direction !== opposites[enemy.direction] && direction !== enemy.direction); //cant turn around or turn to current dir
+            
+            selectedDirection = Math.floor(Math.random() * possibleDirections.length); //0-3
+            direction = possibleDirections[selectedDirection];
+                   
+           /* if(direction === opposites[enemy.direction] || direction === enemy.direction)
+            {
+                console.log("e direction reshuffle");
+                return;
+            }*/
                      
-            enemyTurnDirection = direction;
-            enemyTurn.x = (enemyMark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
-            enemyTurn.y = (enemyMark.y * map.tileHeight) + (map.tileHeight / 2); 
+            enemy.turnDirection = direction;
+            enemy.turnPoint.x = (enemy.mark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
+            enemy.turnPoint.y = (enemy.mark.y * map.tileHeight) + (map.tileHeight / 2); 
             return true;
         }
         else{
@@ -398,9 +410,9 @@ var levelState = {
 
         //console.log("moving " + direction);
 
-        enemy.direction = enemyTurnDirection;
+        enemy.direction = enemy.turnDirection;
 
-        switch (enemyTurnDirection) {
+        switch (enemy.turnDirection) {
             case 4: //down
                 enemy.body.velocity.x = 0;
                 enemy.body.velocity.y = this.getEnemyVelocity(enemy);
@@ -421,7 +433,7 @@ var levelState = {
 
         //rotation
         //this.add.tween(steven).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
-        enemy.direction = enemyTurnDirection;
+        //enemy.direction = enemy.turnDirection;
 
     },
 
@@ -534,10 +546,13 @@ var levelState = {
         directions[3] = map.getTileAbove(wallLayer.index, marker.x, marker.y);
         directions[4] = map.getTileBelow(wallLayer.index, marker.x, marker.y);
 
-        enemyDirections[1] = map.getTileLeft(wallLayer.index, enemyMark.x, enemyMark.y);
-        enemyDirections[2] = map.getTileRight(wallLayer.index, enemyMark.x, enemyMark.y);
-        enemyDirections[3] = map.getTileAbove(wallLayer.index, enemyMark.x, enemyMark.y);
-        enemyDirections[4] = map.getTileBelow(wallLayer.index, enemyMark.x, enemyMark.y);
+        enemies.forEachExists(function(enemy){
+            enemy.directions[1] = map.getTileLeft(wallLayer.index, enemy.mark.x, enemy.mark.y);
+            enemy.directions[2] = map.getTileRight(wallLayer.index, enemy.mark.x, enemy.mark.y);
+            enemy.directions[3] = map.getTileAbove(wallLayer.index, enemy.mark.x, enemy.mark.y);
+            enemy.directions[4] = map.getTileBelow(wallLayer.index, enemy.mark.x, enemy.mark.y);
+        });
+        
     },
 
     collectSnack: function () {
@@ -580,18 +595,18 @@ var levelState = {
         enemies.forEachExists(function(enemy){
             levelState.enemyWrap(enemy);
 
-            if(!enemyIsTurning){
+            if(!enemy.isTurning){
                 
-                if(!eWrap){
-                enemyIsTurning = true; 
-                this.game.time.events.add(100, function () { 
+                if(!enemy.wrap){
+                enemy.isTurning = true; 
+                this.game.time.events.add(enemyTurnDelay, function () { 
                     
                         levelState.checkForEnemyTurn(enemy);
             
-                         if (enemyTurnDirection !== Phaser.NONE){
+                         if (enemy.turnDirection !== Phaser.NONE){
                             levelState.turnEnemy(enemy);            
                          }  
-                         enemyIsTurning = false; 
+                         enemy.isTurning = false; 
                 });
             }
             } 
