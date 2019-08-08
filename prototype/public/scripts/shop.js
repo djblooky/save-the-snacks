@@ -11,6 +11,7 @@ var shopState = {
         //load character/item art
         this.game.load.image('coin', 'coin.png');
         this.game.load.image('icon', 'shop_icon.png');
+        this.game.load.image('bar', 'bar.png');
     },
 
     addBackground: function() {
@@ -20,11 +21,14 @@ var shopState = {
     addGraphics: function(){ //add character/item art
         
         coinIcon = this.game.add.image(game.world.centerX - 12, 20, 'coin');
+
         //shop cards
         card1 = this.game.add.image(game.world.centerX + 40, 100, 'card');
         card2 = this.game.add.image(game.world.centerX + 40, 200, 'card');
         card3 = this.game.add.image(game.world.centerX + 40, 300, 'card');
         card4 = this.game.add.image(game.world.centerX + 40, 400, 'card');
+
+        bar = this.game.add.image(game.world.centerX + 70, 100, 'bar');
         
         //character icons
         //sword icon
@@ -33,12 +37,12 @@ var shopState = {
         icon3 = this.game.add.image(game.world.centerX - 100, 300, 'icon');
         icon4 = this.game.add.image(game.world.centerX - 100, 400, 'icon');
         
-        [coinIcon, card1, card2, card3, card4, icon1, icon2, icon3, icon4].forEach(s => s.anchor.setTo(0.5));
+        [bar,coinIcon, card1, card2, card3, card4, icon1, icon2, icon3, icon4].forEach(s => s.anchor.setTo(0.5));
     },
 
     addText: function(){
         swordCostText = this.game.add.text(game.world.centerX - 20, 100, gameStats.swordCost, { 'fill': 'white', 'fontSize': 16 });
-        coinsDisplay = this.game.add.text(game.world.centerX + 12, 22, gameStats.coins, { 'fill': 'white',  'fontSize': 22 }); //coins bottom right
+        coinsDisplay = this.game.add.text(game.world.centerX + 10, 10, gameStats.savedCoins, { 'fill': 'white',  'fontSize': 22 }); //coins bottom right
         //swordDesc = this.game.add.text(game.world.centerX + 50, 130, "Sword time +" + gameStats.swordUpgradeValue + " milliseconds!", { 'fill': 'white',  'fontSize': 11 });
        
         [swordCostText].forEach(s => s.anchor.setTo(0.5));
@@ -48,17 +52,19 @@ var shopState = {
 
         upgradeSword = this.game.add.button(game.world.centerX - 20, 100, 'buy', function() {
 
+            var count = 0;
             var maxedOut = false;
             if(!maxedOut){ //if havent purchased all upgrades
                 if(gameStats.coins >= gameStats.swordCost){ //if player can afford upgrade, purchase it
                     
                     gameStats.coins -= gameStats.swordCost;
                     //purchased!
-                    //add purchase tally
+                    count++;
+                    //loadingBar[count]
 
                     gameStats.swordDuration = gameStats.swordUpgradeValue
-                    swordUpgradeValue += 2000 //millis
-                    //upgradeCost += 100
+                    gameStats.swordUpgradeValue += 2000; //millis
+                    gameStats.swordCost += 100;
                     
                 }
                 else{
@@ -83,5 +89,11 @@ var shopState = {
         this.addGraphics();
         this.addButtonUI();
         this.addText();
+    },
+
+    update: function(){
+        coinsDisplay.setText(Math.ceil(gameStats.coins)); //update coins
+        swordCostText.setText(gameStats.swordCost);
+
     }
 }

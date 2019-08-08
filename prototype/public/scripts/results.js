@@ -22,7 +22,7 @@ var resultsState = {
 
     addText: function(){
         scoreText = this.game.add.text(game.world.centerX, game.world.centerY, 'Score: ' + gameStats.score, { 'fill': 'white', 'fontSize': 14 });
-        highscoreText = this.game.add.text(game.world.centerX, game.world.centerY - 100, 'High score: ' + Math.max(gameStats.score, gameStats.highScore), { 'fill': 'white', 'fontSize': 16 });
+        highscoreText = this.game.add.text(game.world.centerX, game.world.centerY - 100, 'High score: ' + Math.max(gameStats.score, highScore), { 'fill': 'white', 'fontSize': 16 });
         coinsText = this.game.add.text(game.world.centerX, game.world.centerY + 100, 'Coins: ' + gameStats.coins, { 'fill': 'white', 'fontSize': 14 });
 
         [scoreText, coinsText, highscoreText].forEach(s => s.anchor.setTo(0.5));

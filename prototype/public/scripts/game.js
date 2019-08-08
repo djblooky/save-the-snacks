@@ -63,6 +63,9 @@ enemyTurnDelay = 100;
 
 var gameStats;
 
+var savedCoins = 0;
+var highScore = 0;
+
 function setGameStats(){
 gameStats = {
     score: 0,

@@ -36,7 +36,7 @@ var levelState = {
         if (enemy == crystalShrimp) {
             this.game.time.events.add(gameStats.crystalShrimpMoveDelay, function () {
                 enemy.body.velocity.y = gameStats.enemyVelocity; //begins moving down
-                enemy.direction = 'down';
+                enemy.direction = Phaser.DOWN;
                 enemy.body.velocity.x = 0;
             });
         }
@@ -118,7 +118,7 @@ var levelState = {
         enemies.setAll('anchor.y', 0.5);
         enemies.setAll('frame', 0);
 
-        enemies.forEachExists(function(enemy){ //add to reset enemy
+        enemies.forEachExists(function(enemy){ 
             enemy.mobilized = false;
             enemy.isTurning = false;
             enemy.wrap = false;
@@ -229,6 +229,17 @@ var levelState = {
     },
 
     resetEnemy: function (enemy) {
+
+        enemy.body.velocity.x = 0;
+        enemy.body.velocity.y = 0;
+        enemy.mobilized = false;
+        enemy.isTurning = false;
+        enemy.wrap = false;
+        enemy.mark = new Phaser.Point();
+        enemy.turnPoint = new Phaser.Point();
+        enemy.turnDirection = Phaser.DOWN;
+        enemy.directions = [null, null, null, null, null];
+       
         switch (enemy) {
             case crystalShrimp:
                 enemy.position.setTo(336, 48);
@@ -237,7 +248,7 @@ var levelState = {
                 //case pinkGhost: ghost.position.setTo(205, 255); break;
                 //case turquoiseGhost: ghost.position.setTo(230, 255); break;
         }
-        enemy.mobilized = false;
+           
     },
 
     removeLifeIcons: function () {
@@ -256,7 +267,10 @@ var levelState = {
 
     loseLife: function () {
         levelState.resetSteven();
-        enemies.forEachExists(enemy => levelState.resetEnemy(enemy));
+        enemies.forEachExists(function(enemy){
+            enemy.direction = Phaser.NONE;
+            levelState.resetEnemy(enemy)
+        });
         levelState.removeLifeIcons();
         gameStats.lives--;
         gameStats.inPlay = false;
@@ -274,6 +288,7 @@ var levelState = {
     gameOver: function () {
         //steven.animations.stop();
         //enemies.forEachExists(enemy => enemy.animations.stop());
+        savedCoins += gameStats.coins;
         game.state.start('results');
     },
 
@@ -283,6 +298,7 @@ var levelState = {
                 if (gameStats.swordActivated) { //if player activated a sword, enemies are vulnurable
                     //enemy.animations.play('retreat');
                     levelState.resetEnemy(enemy);
+                    enemy.direction = Phaser.NONE;
 
                     game.time.events.add(gameStats.swordDuration, function () {
                         levelState.mobilizeEnemies(enemy);
@@ -297,6 +313,7 @@ var levelState = {
 
                 } else {
                     levelState.loseLife();
+                    enemy.direction = Phaser.NONE;
                 }
             }
         });
@@ -323,7 +340,7 @@ var levelState = {
     turnEnemy: function(enemy){ //turn enemies on update
         //enemies.forEachExists(function(enemy){
 
-           // if(levelState.enemyCanTurn(enemy)){  
+            //if(levelState.checkForEnemyTurn(enemy)){  //if enemy can turn
     
                 //turn logic for enemy
                 var ex = Math.floor(enemy.x); //get enemy's x/y coords
@@ -332,7 +349,7 @@ var levelState = {
                 //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
                 if (!game.math.fuzzyEqual(ex, enemy.turnPoint.x, threshold) || !game.math.fuzzyEqual(ey, enemy.turnPoint.y, threshold)) { 
                     console.log('enemy too fast to turn');
-                   // enemy.turnDirection = Phaser.NONE;
+                    enemy.turnDirection = Phaser.NONE;
                     return false;
                 }
     
@@ -342,7 +359,7 @@ var levelState = {
     
                 levelState.moveEnemy(enemy);
     
-                console.log("enemy turned " + enemy.turnDirection);
+                //console.log("enemy turned " + enemy.turnDirection);
     
                 enemy.turnDirection = Phaser.NONE; //resets direction to be turned to to none
     
@@ -357,30 +374,33 @@ var levelState = {
 
     checkForEnemyTurn: function(enemy){ //check if there's an available perpendicular turn path, then set the turn direction
 
-        if(enemy.directions[1] === null || enemy.directions[2] === null){ //going to wrap
+        if(enemy.directions[1] === null || enemy.directions[2] === null){ //going to wrap or already turning
             return;
         }
 
         var possibleDirections = [];
 
-        if(enemy.direction == "down" || enemy.direction == "up" || enemy.direction == 3 || enemy.direction == 4){ //if enemy is moving up or down
-            console.log("enemy up/down" + enemy.direction);
+        //if(enemy.direction == "down" || enemy.direction == "up" || enemy.direction == 3 || enemy.direction == 4){ //if enemy is moving up or down
+        //if(enemy.direction === Phaser.UP || enemy.direction === Phaser.DOWN){
             if(enemy.directions[1].index === safetile){ //if left is safe
                 possibleDirections.push(1); //add left as a possible dir
             }
             if(enemy.directions[2].index === safetile){//else if right is safe
                 possibleDirections.push(2);
             }
-        }
+       // }
+       // }
             
-        else if(enemy.direction == "left" || enemy.direction == "right" || enemy.direction == 1 || enemy.direction == 2){ //if enemy is moving left or right
+       // else if(enemy.direction == "left" || enemy.direction == "right" || enemy.direction == 1 || enemy.direction == 2){ //if enemy is moving left or right
+         // else if(enemy.direction === Phaser.LEFT || enemy.direction === Phaser.RIGHT){
             if(enemy.directions[3].index === safetile){ //if up is safe
                 possibleDirections.push(3);
             }
             if(enemy.directions[4].index === safetile){//else if down is safe
                 possibleDirections.push(4);
             }
-        }
+        //}
+       // }
 
         if(possibleDirections.length > 0){ //if there's at least one possible direction
            
@@ -395,11 +415,18 @@ var levelState = {
                 console.log("e direction reshuffle");
                 return;
             }*/
-                     
-            enemy.turnDirection = direction;
-            enemy.turnPoint.x = (enemy.mark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
-            enemy.turnPoint.y = (enemy.mark.y * map.tileHeight) + (map.tileHeight / 2); 
-            return true;
+             
+            if (enemy.direction === opposites[direction]) //check for turn around and cancel
+            {
+               return;
+            } 
+            else //if turning, set turn direction and turn points
+            {
+                enemy.turnDirection = direction;
+                enemy.turnPoint.x = (enemy.mark.x * map.tileWidth) + (map.tileWidth / 2); //set enemy turn points
+                enemy.turnPoint.y = (enemy.mark.y * map.tileHeight) + (map.tileHeight / 2); 
+                return true;
+            }
         }
         else{
             return false;
@@ -408,11 +435,11 @@ var levelState = {
 
     moveEnemy: function (enemy) {
 
-        //console.log("moving " + direction);
+        console.log("moved " + enemy.direction);
 
         enemy.direction = enemy.turnDirection;
 
-        switch (enemy.turnDirection) {
+        switch (enemy.direction) {
             case 4: //down
                 enemy.body.velocity.x = 0;
                 enemy.body.velocity.y = this.getEnemyVelocity(enemy);
@@ -433,7 +460,7 @@ var levelState = {
 
         //rotation
         //this.add.tween(steven).to( { angle: this.getAngle(direction) }, this.turnSpeed, "Linear", true);
-        //enemy.direction = enemy.turnDirection;
+       // enemy.direction = enemy.turnDirection;
 
     },
 
@@ -595,8 +622,7 @@ var levelState = {
         enemies.forEachExists(function(enemy){
             levelState.enemyWrap(enemy);
 
-            if(!enemy.isTurning){
-                
+            if(!enemy.isTurning){     
                 if(!enemy.wrap){
                 enemy.isTurning = true; 
                 this.game.time.events.add(enemyTurnDelay, function () { 
@@ -605,9 +631,11 @@ var levelState = {
             
                          if (enemy.turnDirection !== Phaser.NONE){
                             levelState.turnEnemy(enemy);            
-                         }  
+                         }    
+                         
                          enemy.isTurning = false; 
                 });
+                
             }
             } 
         });
