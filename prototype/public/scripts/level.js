@@ -33,13 +33,13 @@ var levelState = {
 
     mobilizeEnemies: function (enemy) {
 
-        if (enemy == crystalShrimp) {
+       // if (enemy == crystalShrimp) {
             this.game.time.events.add(gameStats.crystalShrimpMoveDelay, function () {
                 enemy.body.velocity.y = gameStats.enemyVelocity; //begins moving down
                 enemy.direction = Phaser.DOWN;
                 enemy.body.velocity.x = 0;
             });
-        }
+       // }
 
         
 
@@ -112,6 +112,7 @@ var levelState = {
         enemies = this.game.add.group();
 
         crystalShrimp = enemies.create(336, 48, 'shrimp'); //get random x and y
+        //enemies.create(crystalShrimp);
         //redCrystalShrimp = enemies.create(144, 112, 'redShrimp');
 
         enemies.setAll('anchor.x', 0.5);
@@ -244,6 +245,9 @@ var levelState = {
             case crystalShrimp:
                 enemy.position.setTo(336, 48);
                 break;
+            default:
+                enemy.position.setTo(336, 48);
+                break;
                 //case orangeGhost: ghost.position.setTo(180, 255); break;
                 //case pinkGhost: ghost.position.setTo(205, 255); break;
                 //case turquoiseGhost: ghost.position.setTo(230, 255); break;
@@ -349,13 +353,17 @@ var levelState = {
                 //  This needs a threshold, because at high speeds you can't turn because the coordinates skip past
                 if (!game.math.fuzzyEqual(ex, enemy.turnPoint.x, threshold) || !game.math.fuzzyEqual(ey, enemy.turnPoint.y, threshold)) { 
                     console.log('enemy too fast to turn');
-                    enemy.turnDirection = Phaser.NONE;
+                    //enemy.turnDirection = Phaser.NONE;
                     return false;
                 }
     
                 enemy.x = enemy.turnPoint.x;
                 enemy.y = enemy.turnPoint.y;
-                enemy.body.reset(enemy.turnPoint.x, enemy.turnPoint.y);
+
+               // var enemyEx = enemies.getFirstExists(false);
+               // if(enemyEx){
+                    enemy.body.reset(enemy.turnPoint.x, enemy.turnPoint.y);
+                //}  
     
                 levelState.moveEnemy(enemy);
     
@@ -418,6 +426,7 @@ var levelState = {
              
             if (enemy.direction === opposites[direction]) //check for turn around and cancel
             {
+               enemy.turnDirection = enemy.direction; //keep going
                return;
             } 
             else //if turning, set turn direction and turn points
@@ -435,10 +444,12 @@ var levelState = {
 
     moveEnemy: function (enemy) {
 
-        console.log("moved " + enemy.direction);
+        
 
         enemy.direction = enemy.turnDirection;
+        console.log("enemy direction " + enemy.direction);
 
+        
         switch (enemy.direction) {
             case 4: //down
                 enemy.body.velocity.x = 0;
@@ -652,6 +663,37 @@ var levelState = {
         }
     },
 
+    accumulateEnemies: function(){
+       if(!spawned){
+            spawned = true;
+        this.game.time.events.add(enemySpawnDelay, function () { 
+            enemies.create(336, 48, 'shrimp');
+
+            enemies.setAll('anchor.x', 0.5);
+            enemies.setAll('anchor.y', 0.5);
+            enemies.setAll('frame', 0);
+    
+            enemies.forEachExists(function(enemy){ 
+                enemy.mobilized = false;
+                enemy.isTurning = false;
+                enemy.wrap = false;
+                enemy.mark = new Phaser.Point();
+                enemy.turnPoint = new Phaser.Point();
+                enemy.turnDirection = Phaser.NONE;
+                enemy.directions = [null, null, null, null, null];
+            });
+
+            this.game.physics.arcade.enable(enemies);
+            enemies.setAll('body.immovable', true);
+    
+            enemies.forEachExists(enemy => levelState.mobilizeEnemies(enemy));
+
+            spawned = false;
+        });
+        }
+
+    },
+
     update: function () {
         if (gameStats.inPlay) {
 
@@ -665,6 +707,7 @@ var levelState = {
             this.hitWall();
             
             this.updateScore();
+            //this.accumulateEnemies();
         }
 
         addSnacks();

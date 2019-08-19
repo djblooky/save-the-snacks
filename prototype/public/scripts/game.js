@@ -1,5 +1,5 @@
-var buildNumber = 4;
-var scaleRatio = window.devicePixelRatio / 3;
+var buildNumber = 5;
+//var scaleRatio = window.devicePixelRatio / 3;
 
 //stage
 var map;
@@ -49,14 +49,10 @@ var willTurn = Phaser.NONE;
 var directions = [null, null, null, null, null];
 var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP];
 
-//enemy movement
-//var enemyDirections = [null, null, null, null, null];
-//var enemyMark = new Phaser.Point();
-//var enemyTurn = new Phaser.Point();
-//var enemyIsTurning = false;
-//var enemyTurnDirection = Phaser.DOWN;
-//var eWrap = false;
-enemyTurnDelay = 100;
+//time
+var enemyTurnDelay = 200;
+var enemySpawnDelay = 2000;
+var spawned = false;
 
 //timers
 //var snackTimer = new Timer(game, autoDestroy);
@@ -69,7 +65,7 @@ var highScore = 0;
 function setGameStats(){
 gameStats = {
     score: 0,
-    coins: 0,
+    coins: 1000,
     //highScore: localStorage['stevenHighScore'] || 0,
     level: 1,
     lives: 3,
@@ -138,6 +134,9 @@ function getRandomTile() {
         //console.log('snack coords: ' + point.x + ','+point.y)
 
         tile = map.getTile(point.x, point.y, wallLayer, true); //wallLayer.index
+        if(tile === null){
+            return;
+        }
         tileIndex = tile.index; //get the tile index at those coords
 
         //console.log('tileIndex: ' + tileIndex);
