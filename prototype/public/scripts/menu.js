@@ -2,7 +2,7 @@ var menuState = {
 
     preload: function() {
         this.game.load.image('title', 'steven_logo.png');
-        this.game.load.image('play', 'playbutton.png');
+        this.game.load.image('play', 'play_button.png');
         this.game.load.image('shop', 'shopbutton.png');
     },
     
