@@ -707,7 +707,7 @@ var levelState = {
             this.hitWall();
             
             this.updateScore();
-            this.accumulateEnemies();
+            //this.accumulateEnemies();
         }
 
         addSnacks();
