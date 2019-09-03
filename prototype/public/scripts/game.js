@@ -230,13 +230,13 @@ function addUI() {
     }); //score display at top center
 
     //pause button
-    pause = this.game.add.button(360, 20, 'pause', function () {
+    pause = this.game.add.button(360, 25, 'pause', function () {
         pauseGame();
         this.game.state.start('pause');
     });
 
     //exit button
-    exit = this.game.add.button(25, 20, 'exit', function () {
+    exit = this.game.add.button(25, 25, 'exit', function () {
         this.game.state.start('menu');
     });
 
