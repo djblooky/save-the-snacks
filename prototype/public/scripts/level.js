@@ -704,6 +704,7 @@ var levelState = {
             this.moveEnemies();
 
             this.wrapAround();
+
             this.hitWall();
             
             this.updateScore();
