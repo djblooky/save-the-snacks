@@ -27,7 +27,7 @@ var menuState = {
         title.scale.setTo(0.5,0.5);
         
         //play button
-		var play = this.game.add.button(game.world.centerX, game.world.centerY +200, 'play',  function() {
+		var play = this.game.add.button(game.world.centerX, game.world.centerY +200, 'play', function() {
 
 			this.game.state.start('level');
 		});

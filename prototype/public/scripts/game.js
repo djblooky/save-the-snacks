@@ -39,6 +39,7 @@ var tileMark = new Phaser.Point(); //snack tile
 var swordTile = new Phaser.Point();
 
 //player movement
+var moving = false;
 var turnPoint = new Phaser.Point();
 var marker = new Phaser.Point();
 var turnSpeed = 150;
@@ -204,6 +205,8 @@ function addSnacks() {
         var currentSnack = gameStats.snacks.find(snack => snack.levels.includes(gameStats.level));
         snacks = this.game.add.sprite(getSnackX(), getSnackY(), currentSnack.name); //randomly place snacks
         snacks.anchor.setTo(0.5);
+        snacks.animations.add('hover', [0,1,2,3], 3, true);
+        snacks.animations.play('hover');
         this.game.physics.arcade.enable(snacks);
     }
 }
@@ -213,6 +216,8 @@ function addSword() {
         gameStats.swordAdded = true;
         sword = this.game.add.sprite(getSwordX(), getSwordY(), 'sword'); //add sword to load.js
         sword.anchor.setTo(0.5);
+        sword.animations.add('hover', [0,1,2,3], 3, true);
+        sword.animations.play('hover');
         this.game.physics.arcade.enable(sword);
     } 
 }
@@ -224,9 +229,10 @@ function pauseGame() {
 }
 
 function addUI() {
-    scoreDisplay = this.game.add.text(game.world.centerX, 15, 'Score: ' + gameStats.score, {
+    scoreText = this.game.add.image(game.world.centerX, 15, 'scoreText');
+    scoreDisplay = this.game.add.text(game.world.centerX + 45, 5, gameStats.score, {
         'fill': 'white',
-        'fontSize': 16
+        'fontSize': 20
     }); //score display at top center
 
     //pause button
@@ -251,11 +257,16 @@ function addUI() {
         'fontSize': 14
     });
 
+    swordStatus = game.add.text(game.world.centerX , 500, "", { 
+        'fill': 'white',
+        'fontSize': 14
+    });
+
     lifeIcon1 = this.game.add.sprite(25, 530, 'life-icon'); //life icons bottom left
     lifeIcon2 = this.game.add.sprite(45, 530, 'life-icon');
     lifeIcon3 = this.game.add.sprite(65, 530, 'life-icon');
 
-    [swordText, scoreDisplay, coinIcon, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
+    [scoreText, swordText, swordStatus, coinIcon, lifeIcon1, lifeIcon2, lifeIcon3, pause, exit].forEach(s => s.anchor.setTo(0.5));
 }
 
 function addLifeIcons() {

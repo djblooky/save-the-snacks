@@ -26,6 +26,7 @@ var levelState = {
     addGraphics: function () {
         this.createStage();
         this.createPlayer();
+        //this.createItems();
         this.createEnemies();
         this.createAnimations();
         //this.animateEnemies();
@@ -170,13 +171,14 @@ var levelState = {
         
         gameStats.swordCount--;
         gameStats.swordActivated = true;
-        console.log("sword activated");
+        swordStatus.setText("sword active!");
 
         //put enemies in vulnerable mode (state to make their sprites blink)
 
         this.game.time.events.add(gameStats.swordDuration, function () {
             gameStats.swordActivated = false;
             console.log("sword deactivated")
+            swordStatus.setText("");
         });
 
         if(gameStats.swordCount <= 0){
@@ -194,8 +196,10 @@ var levelState = {
         swordText.setText("x" + gameStats.swordCount); //displays how many swords are remaining (next to button)
 
         if(gameStats.swordCount == 1){ //if there's no button already (the first sword added)
-            swordButton = this.game.add.button(game.world.centerX, 520, 'swordButton', function() {
-            levelState.activateSword();
+            swordButton = this.game.add.button(game.world.centerX - 20, 512, 'swordButton', function() {
+            if(!gameStats.swordActivated){
+                levelState.activateSword();
+            }      
         });}
     },
 
@@ -290,7 +294,8 @@ var levelState = {
     },
 
     gameOver: function () {
-        //steven.animations.stop();
+        steven.animations.stop();
+        snacks.animations.stop();
         //enemies.forEachExists(enemy => enemy.animations.stop());
         savedCoins += gameStats.coins;
         game.state.start('results');
@@ -520,8 +525,12 @@ var levelState = {
         steven.y = turnPoint.y;
         steven.body.reset(turnPoint.x, turnPoint.y);
 
-        this.moveSteven(willTurn);
+        //if(!moving){
+            this.moveSteven(willTurn);
+           // moving = false;
+        //}
 
+        
         //console.log("turned " + willTurn)
 
         willTurn = Phaser.NONE; //resets direction to be turned to to none
@@ -549,6 +558,7 @@ var levelState = {
     moveSteven: function (direction) {
 
         //console.log("moving " + direction);
+       // moving = true;
 
         //steven.direction = direction;
         current = direction;
@@ -563,19 +573,20 @@ var levelState = {
                 steven.body.velocity.y = -(gameStats.stevenVelocity);
                 break;
             case 1: //left
+                //steven.scale.x *= -1;
                 steven.body.velocity.y = 0;
                 steven.body.velocity.x = -(gameStats.stevenVelocity);
                 break;
             case 2: //right
+                //steven.scale.x *= -1;
                 steven.body.velocity.y = 0;
                 steven.body.velocity.x = gameStats.stevenVelocity;
                 break;
         }
 
         //rotation
-        this.add.tween(steven).to( { angle: this.getAngle(direction) }, turnSpeed, "Linear", true);
+        //this.add.tween(steven).to( { angle: this.getAngle(direction) }, turnSpeed, "Linear", true);
         current = direction;
-
     },
 
     updateGridSensors: function () {
@@ -621,7 +632,7 @@ var levelState = {
     },
 
     updateScore: function () {
-        scoreDisplay.setText('Score: ' + gameStats.score);
+        scoreDisplay.setText(gameStats.score);
         coinsDisplay.setText(Math.ceil(gameStats.coins));
         //highScoreDisplay.setText('High Score: ' + Math.max(gameStats.score, gameStats.highScore));
         if (gameStats.score >= 10000 && !gameStats.livesEarned) {
