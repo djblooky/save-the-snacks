@@ -218,6 +218,9 @@ function addSword() {
 }
 
 function pauseGame() {
+    addPauseBackground();
+    addPauseText();
+    addPauseButtonUI();
     //save steven's position
     //save enemies' positions
     //save snacks' positions
