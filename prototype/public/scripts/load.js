@@ -16,14 +16,17 @@ var loadState = {
         this.game.load.spritesheet('steven', 'steven_move.png', stevenSize, stevenSize);
         this.game.load.spritesheet('shrimp', 'shrimp.png', 32,32);
 		
-        this.game.load.image('life-icon', 'star.png');
+        this.game.load.image('life-icon', 'heart.png');
         this.game.load.image('coin', 'coin.png');
+        this.game.load.image('scoreText', 'score_text.png');
         
-        this.game.load.image('sword', 'sword.png');
+        this.game.load.spritesheet('sword', 'sword.png', 32, 32);
 
         //snacks
-        this.game.load.image('cookieCat', 'cookie_cat.png')
-        this.game.load.image('chaaps', 'chaaps.png')
+        this.game.load.spritesheet('cookieCat', 'cookie_cat.png',32,32);
+
+
+        this.game.load.image('chaaps', 'chaaps.png');
 
     },
     
