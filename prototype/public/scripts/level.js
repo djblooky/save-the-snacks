@@ -39,6 +39,7 @@ var levelState = {
                 enemy.body.velocity.y = gameStats.enemyVelocity; //begins moving down
                 enemy.direction = Phaser.DOWN;
                 enemy.body.velocity.x = 0;
+                enemy.mobilized = true;
             });
        // }
 
@@ -275,14 +276,14 @@ var levelState = {
 
     loseLife: function () {
         levelState.resetSteven();
-        enemies.forEachExists(function(enemy){
-            enemy.direction = Phaser.NONE;
-            levelState.resetEnemy(enemy)
-        });
+        //enemies.forEachExists(function(enemy){
+            //enemy.direction = Phaser.NONE;
+            //levelState.resetEnemy(enemy)
+       // });
         levelState.removeLifeIcons();
         gameStats.lives--;
         gameStats.inPlay = false;
-        enemies.forEach(enemy => levelState.mobilizeEnemies(enemy));
+        //enemies.forEach(enemy => levelState.mobilizeEnemies(enemy));
 
         if (gameStats.lives == 0) {
             levelState.gameOver();
@@ -306,12 +307,11 @@ var levelState = {
             if (gameStats.inPlay) {
                 if (gameStats.swordActivated) { //if player activated a sword, enemies are vulnurable
                     //enemy.animations.play('retreat');
-                    levelState.resetEnemy(enemy);
-                    enemy.direction = Phaser.NONE;
 
-                    game.time.events.add(gameStats.swordDuration, function () {
-                        levelState.mobilizeEnemies(enemy);
-                    });
+                   // game.time.events.add(gameStats.swordDuration, function () {
+                        //levelState.mobilizeEnemies(enemy);
+                    //});
+                    enemy.destroy();
 
                     gameStats.swordActivated = false;
 
@@ -322,7 +322,6 @@ var levelState = {
 
                 } else {
                     levelState.loseLife();
-                    enemy.direction = Phaser.NONE;
                 }
             }
         });
@@ -668,6 +667,10 @@ var levelState = {
             this.checkForTurn(this.getMoveKey()); //only move while move keys are pressed
         }
 
+        if(Phaser.Keyboard.SPACEBAR.isDown){
+            activateSword();
+        }
+
         if (willTurn !== Phaser.NONE) //if a turn direction has been set, turn
         {
             this.turnSteven();
@@ -680,18 +683,22 @@ var levelState = {
         this.game.time.events.add(enemySpawnDelay, function () { 
             enemies.create(336, 48, 'shrimp');
 
-            enemies.setAll('anchor.x', 0.5);
-            enemies.setAll('anchor.y', 0.5);
-            enemies.setAll('frame', 0);
+            //enemies.setAll('frame', 0);
     
             enemies.forEachExists(function(enemy){ 
-                enemy.mobilized = false;
-                enemy.isTurning = false;
-                enemy.wrap = false;
-                enemy.mark = new Phaser.Point();
-                enemy.turnPoint = new Phaser.Point();
-                enemy.turnDirection = Phaser.NONE;
-                enemy.directions = [null, null, null, null, null];
+
+                if(enemy.mobilized == null){ //if new enemy, set anchor
+                    enemy.anchor.setTo(0.5);
+
+                    enemy.mobilized = false;
+                    enemy.isTurning = false;
+                    enemy.wrap = false;
+                    enemy.mark = new Phaser.Point();
+                    enemy.turnPoint = new Phaser.Point();
+                    enemy.turnDirection = Phaser.NONE;
+                    enemy.directions = [null, null, null, null, null];
+                }
+               
             });
 
             this.game.physics.arcade.enable(enemies);
@@ -719,7 +726,7 @@ var levelState = {
             this.hitWall();
             
             this.updateScore();
-            //this.accumulateEnemies();
+            this.accumulateEnemies();
         }
 
         addSnacks();

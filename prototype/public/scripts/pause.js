@@ -71,13 +71,17 @@ function unpause(){
 function addPauseText(){
     //pauseText = this.game.add.text(0, -115, "The game is paused.", { 'fill': 'white', 'fontSize': 24});
     buildText = this.game.add.text(160, 180, 'Build ' + buildNumber, { 'fill': 'white', 'fontSize': 20 });
+    sfxText = this.game.add.text(-20, -20, 'SFX', { 'fill': 'white', 'fontSize': 20 });
+    musicText = this.game.add.text(-30, 80, 'MUSIC', { 'fill': 'white', 'fontSize': 20 });
 
     popup.addChild(buildText);
+    popup.addChild(sfxText);
+    popup.addChild(musicText);
     //popup.addChild(pauseText);
     //sfxText
     //musicText
 
-    [buildText].forEach(s => s.anchor.setTo(0.5));
+    [buildText, sfxText, musicText].forEach(s => s.anchor.setTo(0.5));
 }
    
 function openWindow() {

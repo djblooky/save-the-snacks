@@ -54,7 +54,7 @@ var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP]
 
 //time
 var enemyTurnDelay = 200;
-var enemySpawnDelay = 2000;
+var enemySpawnDelay = 10000;
 var spawned = false;
 
 //timers
