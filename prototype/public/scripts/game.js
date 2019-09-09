@@ -66,7 +66,7 @@ var highScore = 0;
 function setGameStats(){
 gameStats = {
     score: 0,
-    coins: 1000,
+    coins: 0,
     //highScore: localStorage['stevenHighScore'] || 0,
     level: 1,
     lives: 3,
@@ -223,9 +223,11 @@ function addSword() {
 }
 
 function pauseGame() {
+    
     addPauseBackground();
     addPauseText();
     addPauseButtonUI();
+    openWindow();
     //save steven's position
     //save enemies' positions
     //save snacks' positions
