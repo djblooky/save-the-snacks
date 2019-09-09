@@ -29,7 +29,7 @@ function addPauseButtonUI(){
     sfxToggle.scale.y = 0.5;
 
     //add toggle music
-    musicToggle = game.add.button(60, 80, 'onToggle', sfxOff());;
+    musicToggle = game.add.button(60, 80, 'onToggle', musicOff());;
     musicToggle.scale.x = 0.5;
     musicToggle.scale.y = 0.5;
 
@@ -56,7 +56,11 @@ function sfxOff(){
 }
 
 function musicOff(){
+    //if music is on
+    //gameMusic.mute = true;
 
+    //if music is off
+   // gameMusic.mute = false;
 }
 
 function unpause(){
@@ -65,15 +69,15 @@ function unpause(){
 }
 
 function addPauseText(){
-    pauseText = this.game.add.text(0, -115, "The game is paused.", { 'fill': 'white', 'fontSize': 24});
+    //pauseText = this.game.add.text(0, -115, "The game is paused.", { 'fill': 'white', 'fontSize': 24});
     buildText = this.game.add.text(160, 180, 'Build ' + buildNumber, { 'fill': 'white', 'fontSize': 20 });
 
     popup.addChild(buildText);
-    popup.addChild(pauseText);
+    //popup.addChild(pauseText);
     //sfxText
     //musicText
 
-    [pauseText, buildText].forEach(s => s.anchor.setTo(0.5));
+    [buildText].forEach(s => s.anchor.setTo(0.5));
 }
    
 function openWindow() {

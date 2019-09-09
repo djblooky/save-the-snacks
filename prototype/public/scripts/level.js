@@ -88,7 +88,7 @@ var levelState = {
         map.addTilesetImage('terrain', 'terrain');
         groundLayer = map.createLayer("GroundLayer");
         wallLayer = map.createLayer('WallLayer');
-        map.setCollision([297, 298, 299, 329, 330, 331], true, 'WallLayer');
+        map.setCollision([297, 298, 299, 300, 329, 330, 331], true, 'WallLayer');
     },
 
     createPlayer: function () {

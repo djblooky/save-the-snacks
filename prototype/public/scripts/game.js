@@ -1,6 +1,8 @@
 var buildNumber = 5;
 //var scaleRatio = window.devicePixelRatio / 3;
 
+var gameMusic;
+
 //stage
 var map;
 var wallLayer;
@@ -67,6 +69,8 @@ function setGameStats(){
 gameStats = {
     score: 0,
     coins: 0,
+    sfxEnabled: true,
+    musicEnabled: true,
     //highScore: localStorage['stevenHighScore'] || 0,
     level: 1,
     lives: 3,
@@ -228,9 +232,13 @@ function pauseGame() {
     addPauseText();
     addPauseButtonUI();
     openWindow();
-    //save steven's position
-    //save enemies' positions
-    //save snacks' positions
+    
+    //disable sword spawning
+    //disable snack spawning
+    //disable enemy movement
+    //disable steven movement
+    //disable game buttons
+    //pause sword duration
 }
 
 function addUI() {
