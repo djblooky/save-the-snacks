@@ -10,7 +10,7 @@ var shopState = {
 
         //load character/item art
         this.game.load.image('coin', 'coin.png');
-        this.game.load.image('icon', 'shop_icon.png');
+        this.game.load.image('icon', 'shop_icon1.png');
         this.game.load.image('icon2', 'shop_icon2.png');
         this.game.load.image('icon3', 'shop_icon3.png');
         this.game.load.image('icon4', 'shop_icon4.png');
@@ -30,6 +30,11 @@ var shopState = {
         card2 = this.game.add.image(game.world.centerX + 40, 200, 'card');
         card3 = this.game.add.image(game.world.centerX + 40, 300, 'card');
         card4 = this.game.add.image(game.world.centerX + 40, 400, 'card');
+
+        [card1, card2, card3, card4].forEach(card =>
+           { card.scale.y = 0.1;
+            card.scale.x = 0.5; }
+        );
 
         bar = this.game.add.image(game.world.centerX + 70, 100, 'bar');
         
