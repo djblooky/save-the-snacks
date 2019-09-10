@@ -1,6 +1,8 @@
 var buildNumber = 5;
 //var scaleRatio = window.devicePixelRatio / 3;
 
+var gameMusic;
+
 //stage
 var map;
 var wallLayer;
@@ -52,7 +54,7 @@ var opposites = [Phaser.NONE, Phaser.RIGHT, Phaser.LEFT, Phaser.DOWN, Phaser.UP]
 
 //time
 var enemyTurnDelay = 200;
-var enemySpawnDelay = 2000;
+var enemySpawnDelay = 10000;
 var spawned = false;
 
 //timers
@@ -66,15 +68,17 @@ var highScore = 0;
 function setGameStats(){
 gameStats = {
     score: 0,
-    coins: 1000,
+    coins: 0,
+    sfxEnabled: true,
+    musicEnabled: true,
     //highScore: localStorage['stevenHighScore'] || 0,
     level: 1,
     lives: 3,
     livesEarned: 0,
     inPlay: false,
     swordActivated: false,
-    swordDuration: 3000,
-    swordSpawnDelay: 10000,
+    swordDuration: 5000,
+    swordSpawnDelay: 8000,
     swordCount: 0,
     snacksAdded: false,
     swordAdded: false,
@@ -101,7 +105,7 @@ gameStats = {
     stevenStartingX: 32 + (stevenSize / 2),
     stevenStartingY: 32 + (stevenSize / 2),
 
-    enemyCoinValue: 2,
+    enemyCoinValue: 10,
     multiplier: 1.2,
 
     crystalShrimpVelocity: 80,
@@ -113,7 +117,11 @@ gameStats = {
     warningTime: 3000,
     snackRespawnTime: 500,
 
-    swordCost: 100,
+    swordCost: 25,
+    amethystCost: 50,
+    pearlCost: 100,
+    garnetCost: 150,
+
     swordUpgradeValue: 2000,
 }
 }
@@ -223,12 +231,18 @@ function addSword() {
 }
 
 function pauseGame() {
+    
     addPauseBackground();
     addPauseText();
     addPauseButtonUI();
-    //save steven's position
-    //save enemies' positions
-    //save snacks' positions
+    openWindow();
+    
+    //disable sword spawning
+    //disable snack spawning
+    //disable enemy movement
+    //disable steven movement
+    //disable game buttons
+    //pause sword duration
 }
 
 function addUI() {
@@ -242,12 +256,12 @@ function addUI() {
     pause = this.game.add.button(360, 25, 'pause', function () {
         pauseGame();
         this.game.state.start('pause');
-    });
+    },this,0,1);
 
     //exit button
     exit = this.game.add.button(25, 25, 'exit', function () {
         this.game.state.start('menu');
-    });
+    }, this, 0, 1);
 
     coinIcon = this.game.add.image(310, 530, 'coin');
     coinsDisplay = this.game.add.text(325, 520, gameStats.coins, {
@@ -286,6 +300,8 @@ function addLifeIcons() {
             lifeIcon4 = this.game.add.sprite(85, 530, 'life-icon');
             lifeIcon4.anchor.setTo(0.5);
             break;
+        //case 4:
+           // lifeIcon5
     }
 }
 
