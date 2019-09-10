@@ -77,8 +77,8 @@ gameStats = {
     livesEarned: 0,
     inPlay: false,
     swordActivated: false,
-    swordDuration: 3000,
-    swordSpawnDelay: 10000,
+    swordDuration: 5000,
+    swordSpawnDelay: 8000,
     swordCount: 0,
     snacksAdded: false,
     swordAdded: false,
@@ -105,7 +105,7 @@ gameStats = {
     stevenStartingX: 32 + (stevenSize / 2),
     stevenStartingY: 32 + (stevenSize / 2),
 
-    enemyCoinValue: 2,
+    enemyCoinValue: 10,
     multiplier: 1.2,
 
     crystalShrimpVelocity: 80,
@@ -117,7 +117,11 @@ gameStats = {
     warningTime: 3000,
     snackRespawnTime: 500,
 
-    swordCost: 100,
+    swordCost: 25,
+    amethystCost: 50,
+    pearlCost: 100,
+    garnetCost: 150,
+
     swordUpgradeValue: 2000,
 }
 }
@@ -296,6 +300,8 @@ function addLifeIcons() {
             lifeIcon4 = this.game.add.sprite(85, 530, 'life-icon');
             lifeIcon4.anchor.setTo(0.5);
             break;
+        //case 4:
+           // lifeIcon5
     }
 }
 
