@@ -256,12 +256,12 @@ function addUI() {
     pause = this.game.add.button(360, 25, 'pause', function () {
         pauseGame();
         this.game.state.start('pause');
-    });
+    },this,0,1);
 
     //exit button
     exit = this.game.add.button(25, 25, 'exit', function () {
         this.game.state.start('menu');
-    });
+    }, this, 0, 1);
 
     coinIcon = this.game.add.image(310, 530, 'coin');
     coinsDisplay = this.game.add.text(325, 520, gameStats.coins, {

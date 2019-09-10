@@ -12,8 +12,8 @@ var loadState = {
         this.game.load.image('backdrop', 'black.png');
         
         //button ui
-        this.game.load.image('pause', 'settings_button.png');
-        this.game.load.image('exit', 'back_button.png');
+        this.game.load.spritesheet('pause', 'settings_button.png',45,45);
+        this.game.load.spritesheet('exit', 'back_button.png',45,45);
         this.game.load.image('swordButton', 'sword_button.png');
         this.game.load.image('onToggle', 'on_toggle.png')
         this.game.load.image('offToggle', 'off_toggle.png')

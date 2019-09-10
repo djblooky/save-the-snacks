@@ -7,9 +7,8 @@ var menuState = {
     preload: function() {
         this.game.load.image('logo', 'steven_logo.png');
         this.game.load.image('title', 'STS_logo.png');
-        this.game.load.image('play', 'play_button.png');
-        this.game.load.image('play_pressed', 'play_button_pressed.png');
-        this.game.load.image('shop', 'shopbutton.png');
+        this.game.load.spritesheet('play', 'play_button.png',60,60);
+        this.game.load.spritesheet('shop', 'shop_button.png',45,45);
         this.game.load.audio('music', '/audio/title_music.mp3', 0.5, true)
 
         musicFaded = false;
@@ -43,18 +42,18 @@ var menuState = {
            //titleMusic.fadeTo(1000, 0);
             //if(musicFaded){
                 titleMusic.mute = true;
-                this.game.state.start('level');
+                game.state.start('level');
             //}	
-		});
+		}, true, 0, 1);
         
         //shop button
 		var shop = this.game.add.button(game.world.centerX - 100, game.world.centerY +200, 'shop', function() {
 			this.game.state.start('shop');
-        });
+        },this,0,1);
         
         var settings = this.game.add.button(game.world.centerX + 100, game.world.centerY +200, 'pause', function() {
 			pauseGame();
-        });
+        },true,0,1);
         
         [play, shop, settings].forEach(o => o.anchor.setTo(0.5));
     },

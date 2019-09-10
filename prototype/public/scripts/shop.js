@@ -13,7 +13,7 @@ var shopState = {
         this.game.load.image('card', 'shop_card.png');
 
         //load button ui    
-        this.game.load.image('play', 'playbutton.png');//play button
+        this.game.load.spritesheet('play', 'playbutton.png', 60, 60);//play button
         this.game.load.image('buy', 'buy_button.png');
 
         //load character/item art
@@ -98,8 +98,8 @@ var shopState = {
       //add play button
         play = this.game.add.button(game.world.centerX, 500, 'play', function() {
             menuState.resetGame();
-            this.game.state.start('level');
-         });
+            game.state.start('level');
+         }, true, 0, 1);
 
         buyAmethyst = this.game.add.button(game.world.centerX - 20, 200, 'buy', function() {
             
