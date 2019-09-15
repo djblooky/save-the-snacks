@@ -365,8 +365,11 @@ var levelState = {
                 enemy.y = enemy.turnPoint.y;
 
                // var enemyEx = enemies.getFirstExists(false);
-               // if(enemyEx){
-                    enemy.body.reset(enemy.turnPoint.x, enemy.turnPoint.y);
+               if(enemy.body == null){
+                    return;
+               }
+                    
+               enemy.body.reset(enemy.turnPoint.x, enemy.turnPoint.y);
                 //}  
     
                 levelState.moveEnemy(enemy);

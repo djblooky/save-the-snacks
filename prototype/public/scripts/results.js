@@ -1,7 +1,7 @@
 var resultsState = {
     preload: function(){
         this.game.load.image('resultsBackground', 'sky.png'); //results_bg.png
-        this.game.load.image('shop', 'shopbutton.png'); 
+        this.game.load.spritesheet('shop', 'shopbutton.png',45,45); 
         
     },
 
@@ -13,8 +13,8 @@ var resultsState = {
     addButtonUI: function(){ 
         //add shop button
         shop = this.game.add.button(game.world.centerX, 500, 'shop', function() {
-			this.game.state.start('shop');
-        });
+			game.state.start('shop');
+        },true,0,1);
         
 
         [shop].forEach(s => s.anchor.setTo(0.5));
