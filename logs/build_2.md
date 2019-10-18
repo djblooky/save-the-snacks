@@ -1,6 +1,6 @@
 # Build 2 Update - First Demo
 
-[Return to README](save-the-snacks/README.md)
+[Return to README](../README.md)
 
 ## Build Features:
 
